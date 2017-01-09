@@ -18,6 +18,8 @@ app.get('/', (req, res) => {
 });
 app.use('/users', require('./api/user/index.js'));
 
+app.get('/users/:id', require('./api/user/index.js'));
+
 // Connect to MySQL on start
 db.connect(db.MODE_PRODUCTION, function(err) {
     if (err) {
