@@ -1,0 +1,21 @@
+{
+  "development": {
+    "host": "222.239.249.154",
+    "port": "3000"
+  },
+  "development_mysql": {
+    "username": "mvc",
+    "password": "mvc",
+    "database": "mvc",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql",
+    "pool": { "max": 5, "min": 0, "idle": 10000 }
+  },
+  "development_redis": {
+    "password": "redis",
+    "host": "localhost",
+    "port": 6379
+  }
+
+}

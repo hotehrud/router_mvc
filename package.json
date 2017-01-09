@@ -4,20 +4,24 @@
   "description": "라우팅 모듈을 통한 견고한 MVC 패턴 적용",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/hotehrud/router_mvc.git"
   },
   "keywords": [
-    "MVC",
-    "패턴"
+    "MVC"
   ],
   "author": "LeeJungHyun",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/hotehrud/router_mvc/issues"
   },
-  "homepage": "https://github.com/hotehrud/router_mvc#readme"
+  "homepage": "https://github.com/hotehrud/router_mvc#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "express-generator": "^4.14.0"
+  }
 }
