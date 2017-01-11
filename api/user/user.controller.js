@@ -6,9 +6,9 @@ exports.index = (req, res) => {
     model_user.index(function(msg, data) {
         
         if (msg == 'empty') {
-            res.end('empty');
+            return res.status(404).json({error: 'Unknown user'});
         } else {
-            res.json(data);
+            return res.json(data);
         }
     });
 };
@@ -24,9 +24,9 @@ exports.show = (req, res) => {
         model_user.show(id, function(msg, data) {
 
             if (msg == 'empty') {
-                res.end('empty');
+                return res.status(404).json({error: 'Unknown user'});
             } else {
-                res.json(data);
+                return res.json(data);
             }
         });
     }
@@ -43,12 +43,30 @@ exports.destroy = (req, res) => {
     model_user.destory(id, function(msg) {
         if (msg === 'empty') {
             return res.status(404).json({error: 'Unknown user'});
+        } else {
+            return res.status(204).send();
         }
     });
 
-    res.status(204).send();
 };
 
 exports.create = (req, res) => {
     // ...
+
+    const id = req.body.id;
+    const name = req.body.name;
+
+    const user = {
+        member_id: id,
+        member_name: name
+    }
+
+    model_user.create(user, function(msg) {
+        if (msg === 'duplication') {
+            return res.status(404).json({error: 'Duplication user'});
+        } else {
+            return res.status(204).send();
+        }
+
+    });
 };

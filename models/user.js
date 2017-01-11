@@ -41,3 +41,25 @@ exports.destory = function(id, done) {
 
     })
 }
+
+exports.create = function(user, done) {
+
+    db.get().query('select * from members where member_id = ' + user.member_id, function(err, result) {
+        db.release();
+
+        if (result.length == 0) {
+
+            db.get().query('insert into members set ?', user ,function(err, result) {
+                db.release();
+
+                done(null, result);
+
+            })
+
+        } else {
+            done('duplication');
+        }
+
+    })
+
+}
