@@ -4,7 +4,7 @@
   "description": "라우팅 모듈을 통한 견고한 MVC 패턴 적용",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node_modules/.bin/mocha api/user/user.spec.js",
     "start": "node index.js"
   },
   "repository": {
@@ -23,5 +23,10 @@
   "dependencies": {
     "express": "^4.14.0",
     "express-generator": "^4.14.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0",
+    "should": "^11.1.2",
+    "supertest": "^2.0.1"
   }
 }
