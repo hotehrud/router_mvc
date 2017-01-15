@@ -36,6 +36,7 @@ exports.destroy = (req, res) => {
     // ...
 
     const id = parseInt(req.params.id, 10);
+
     if (!id) {
         return res.status(400).json({error: 'Incorrect id'});
     }
@@ -65,3 +66,22 @@ exports.create = (req, res) => {
     }).then((user_result) => res.status(201).json(user_result))
 
 };
+
+exports.update = (req, res) => {
+    // ...
+
+    const id = parseInt(req.params.id, 10);
+    const name = req.body.member_name;
+
+    models.User.update(
+        { member_name: name }, /* set attributes' value */
+        { where: { member_id : id }} /* where criteria */
+    ).then(user => {
+        if (!user) {
+            return res.status(404).json({error: 'No User'});
+        }
+
+        res.status(204).send();
+    });
+
+}
