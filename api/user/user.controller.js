@@ -1,4 +1,5 @@
 const model_user = require('../../models/user.js');
+const models = require('../../models');
 
 exports.index = (req, res) => {
     // ...
@@ -53,20 +54,12 @@ exports.destroy = (req, res) => {
 exports.create = (req, res) => {
     // ...
 
-    const id = req.body.id;
-    const name = req.body.name;
+    const id = req.body.member_id;
+    const name = req.body.member_name;
 
-    const user = {
+    models.User.create({
         member_id: id,
         member_name: name
-    }
+    }).then((user_result) => res.status(201).json(user_result))
 
-    model_user.create(user, function(msg) {
-        if (msg === 'duplication') {
-            return res.status(404).json({error: 'Duplication user'});
-        } else {
-            return res.status(204).send();
-        }
-
-    });
 };
