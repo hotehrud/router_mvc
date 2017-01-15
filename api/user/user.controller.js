@@ -4,14 +4,9 @@ const models = require('../../models');
 exports.index = (req, res) => {
     // ...
 
-    model_user.index(function(msg, data) {
-        
-        if (msg == 'empty') {
-            return res.status(404).json({error: 'Unknown user'});
-        } else {
-            return res.json(data);
-        }
-    });
+    models.User.findAll()
+        .then(users => res.json(users));
+
 };
 
 exports.show = (req, res) => {
@@ -21,16 +16,20 @@ exports.show = (req, res) => {
 
     if (!id) {
         return res.status(400).json({error: 'Incorrect id'});
-    } else {
-        model_user.show(id, function(msg, data) {
-
-            if (msg == 'empty') {
-                return res.status(404).json({error: 'Unknown user'});
-            } else {
-                return res.json(data);
-            }
-        });
     }
+
+    models.User.findOne({
+        where: {
+            member_id: id
+        }
+    }).then(user => {
+        if (!user) {
+            return res.status(404).json({error: 'No User'});
+        }
+
+        return res.json(user);
+    });
+
 };
 
 exports.destroy = (req, res) => {
