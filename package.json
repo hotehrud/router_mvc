@@ -22,7 +22,8 @@
   "homepage": "https://github.com/hotehrud/router_mvc#readme",
   "dependencies": {
     "express": "^4.14.0",
-    "express-generator": "^4.14.0"
+    "express-generator": "^4.14.0",
+    "sequelize": "^3.29.0"
   },
   "devDependencies": {
     "mocha": "^3.2.0",

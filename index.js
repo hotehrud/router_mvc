@@ -18,17 +18,27 @@ app.get('/', (req, res) => {
 });
 app.use('/users', require('./api/user/index.js'));
 
-// Connect to MySQL on start
-db.connect(db.MODE_PRODUCTION, function(err) {
-    if (err) {
-        console.log('Unable to connect to MySQL.');
-        process.exit(1)
-    } else {
-        app.listen(config.port, () => {
-            console.log('Example app listening on port 3000!');
+app.listen(config.port, () => {
+    console.log('Example app listening on port ' + config.port);
+
+    require('./models').sequelize.sync({force: true})
+        .then(() => {
+            console.log('Databases sync');
         });
-    }
-})
+});
+
+
+//// Connect to MySQL on start
+//db.connect(db.MODE_PRODUCTION, function(err) {
+//    if (err) {
+//        console.log('Unable to connect to MySQL.');
+//        process.exit(1)
+//    } else {
+//        app.listen(config.port, () => {
+//            console.log('Example app listening on port 3000!');
+//        });
+//    }
+//})
 
 
 module.exports = app;
