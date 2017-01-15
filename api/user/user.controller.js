@@ -40,12 +40,15 @@ exports.destroy = (req, res) => {
         return res.status(400).json({error: 'Incorrect id'});
     }
 
-    model_user.destory(id, function(msg) {
-        if (msg === 'empty') {
-            return res.status(404).json({error: 'Unknown user'});
-        } else {
-            return res.status(204).send();
+    models.User.destroy({
+        where: {
+            member_id: id
         }
+    }).then(user => {
+        if (!user) {
+            return res.status(404).json({error: 'No User'});
+        }
+        res.status(204).send()
     });
 
 };

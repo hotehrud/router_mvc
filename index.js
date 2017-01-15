@@ -21,7 +21,7 @@ app.use('/users', require('./api/user/index.js'));
 app.listen(config.port, () => {
     console.log('Example app listening on port ' + config.port);
 
-    require('./models').sequelize.sync({force: true})
+    require('./models').sequelize.sync({force: false})
         .then(() => {
             console.log('Databases sync');
         });
