@@ -1,8 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const env = process.env.NODE_ENV || "development";
-const config = require('./config/config.json')[env];
+const config = require('./config/environments');
 const db = require('./db');
 
 const app = express();
