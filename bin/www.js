@@ -1,5 +1,5 @@
-const app = require('../index');
-const config = require('../config/environments');
+const app = require('../app');
+const config = require('../app/config/environments');
 
 const syncDatabase = require('./sync-database');
 
