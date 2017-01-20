@@ -1,8 +1,24 @@
 const should = require('should');
 const request = require('supertest');
 const app = require('../../index');
+const syncDatabase = require('../../bin/sync-database');
+const models = require('../../models');
 
 describe('GET /users', () => {
+    before('sync database', (done) => {
+        syncDatabase().then(() => done());
+    });
+
+    const users = [
+        {member_name: 'alice'},
+        {member_name: 'bek'},
+        {member_name: 'chris'}
+    ];
+    before('insert 3 users into database', (done) => {
+        models.User.bulkCreate(users).then(() => done());
+    });
+
+
     it('should return 200 status code', (done) => {
         request(app)
             .get('/users')
@@ -42,5 +58,8 @@ describe('GET /users', () => {
     });
 
 
+    after('clear up database', (done) => {
+        syncDatabase().then(() => done());
+    });
 
 });

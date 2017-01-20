@@ -1,5 +1,11 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('mvc', 'mvc', 'mvc');
+const config = require('./config/environments');
+
+const sequelize = new Sequelize(
+    config.mysql.database,
+    config.mysql.username,
+    config.mysql.password
+)
 
 const User = sequelize.define('members', {
     member_seq: {
