@@ -1,11 +1,13 @@
 const environments = {
     development: {
-        host: "222.239.249.154",
+        host: "localhost",
         port: "3000",
         mysql: {
-            username: 'mvc',
-            password: 'mvc',
-            database: 'mvc'
+            username: 'mygumi',
+            password: 'mygumi*0707~!',
+            database: 'mygumi',
+            host: 'mygumidb.clipq5ouodgr.ap-northeast-2.rds.amazonaws.com',
+            port: '3306'
         },
         redis: {
             password: "redis",
@@ -15,12 +17,14 @@ const environments = {
     },
 
     test: {
-        host: "222.239.249.154",
+        host: "localhost",
         port: "4000",
         mysql: {
-            username: 'mvc',
-            password: 'mvc',
-            database: 'mvc_test'
+            username: 'mygumi',
+            password: 'mygumi*0707~!',
+            database: 'mygumi',
+            host: 'mygumidb.clipq5ouodgr.ap-northeast-2.rds.amazonaws.com',
+            port: '3306'
         },
         redis: {
             password: "redis",
@@ -30,7 +34,7 @@ const environments = {
     },
 
     production: {
-        host: "222.239.249.154",
+        host: "localhost",
         port: "3000",
         mysql: {
             username: 'mvc',

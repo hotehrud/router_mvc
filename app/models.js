@@ -4,8 +4,12 @@ const config = require('./config/environments');
 const sequelize = new Sequelize(
     config.mysql.database,
     config.mysql.username,
-    config.mysql.password
-)
+    config.mysql.password, {
+        host: config.mysql.host,
+        port: config.mysql.port,
+        dialect: 'mysql'
+    });
+
 
 const User = sequelize.define('members', {
     member_seq: {
