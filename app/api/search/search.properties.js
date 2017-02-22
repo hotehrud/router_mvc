@@ -18,14 +18,14 @@ const apiProperties = {
     },
     daum: {
         apiKey: "a5b0eef3c46e86443e3b73624f11488a",
-        searchBoard: "https://apis.daum.net/search/board?apikey=a5b0eef3c46e86443e3b73624f11488a",
-        searchVclip: "https://apis.daum.net/search/vclip?apikey=a5b0eef3c46e86443e3b73624f11488a",
-        searchBlog: "https://apis.daum.net/search/blog?apikey=a5b0eef3c46e86443e3b73624f11488a",
-        searchWeb: "https://apis.daum.net/search/web?apikey=a5b0eef3c46e86443e3b73624f11488a",
-        searchImage: "https://apis.daum.net/search/image?apikey=a5b0eef3c46e86443e3b73624f11488a",
-        searchKin: "https://apis.daum.net/search/knowledge?apikey=a5b0eef3c46e86443e3b73624f11488a",
-        searchBook: "https://apis.daum.net/search/book?apikey=a5b0eef3c46e86443e3b73624f11488a",
-        searchCafe: "https://apis.daum.net/search/cafe?apikey=a5b0eef3c46e86443e3b73624f11488a"
+        searchBoard: "https://apis.daum.net/search/board?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
+        searchVclip: "https://apis.daum.net/search/vclip?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
+        searchBlog: "https://apis.daum.net/search/blog?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
+        searchWeb: "https://apis.daum.net/search/web?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
+        searchImage: "https://apis.daum.net/search/image?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
+        searchKin: "https://apis.daum.net/search/knowledge?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
+        searchBook: "https://apis.daum.net/search/book?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
+        searchCafe: "https://apis.daum.net/search/cafe?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q="
     }
 }
 

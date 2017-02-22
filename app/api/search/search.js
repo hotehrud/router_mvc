@@ -26,7 +26,14 @@ module.exports = (function() {
 
             variables['options'] = {};
 
-            variables['options']['headers'] = properties[sns]['headers'];
+            if (typeof(properties[sns]['headers']) != 'undefined') {
+                variables['options']['headers'] = properties[sns]['headers'];
+            }
+
+            if (typeof(properties[sns][type]) == 'undefined') {
+                return false;
+            }
+
             variables['options']['url'] = properties[sns][type] + encodeURI(keyword);
 
             return variables['options'];

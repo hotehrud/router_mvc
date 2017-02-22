@@ -19,6 +19,10 @@ exports.show = (req, res) => {
     const request = require('request');
     const options = search.init(types);
 
+    if (!options) {
+        res.sendStatus(404);
+    }
+
     request.get(options, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
