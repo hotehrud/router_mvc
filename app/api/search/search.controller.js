@@ -13,7 +13,9 @@ exports.show = (req, res) => {
     const types = {
         keyword: req.params.keyword,
         sns: req.query.sns,
-        type: req.query.type
+        type: req.query.type,
+        page: req.query.page,
+        sort: req.query.sort
     }
 
     const request = require('request');

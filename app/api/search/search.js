@@ -15,14 +15,16 @@ module.exports = (function() {
 
     mySearch.init = function(types) {
 
-        return mySearch.create.options(types['sns'], types['keyword'], types['type']);
+        const sub = {page:types['page'], sort:types['sort']};
+
+        return mySearch.create.options(types['sns'], types['keyword'], types['type'], sub);
 
     }
 
     mySearch.create = (function() {
         const create = {};
 
-        create.options = function(sns, keyword, type) {
+        create.options = function(sns, keyword, type, sub) {
 
             variables['options'] = {};
 
@@ -35,6 +37,26 @@ module.exports = (function() {
             }
 
             variables['options']['url'] = properties[sns][type] + encodeURI(keyword);
+
+            // sub Options
+            if (typeof(sub['page']) != 'undefined') {
+                next();
+            }
+
+            if (typeof(sub['sort']) != 'undefined') {
+                sort();
+            }
+
+            function next() {
+                let pageno = sub['page'];
+
+                variables['options']['url'] += pageno < 4 ? '&pageno=' + pageno : '';
+                variables['options']['url'] += '&start=' + (pageno * 10);
+            }
+
+            function sort() {
+                variables['options']['url'] += '&sort=date';
+            }
 
             return variables['options'];
         }
