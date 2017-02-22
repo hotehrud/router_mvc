@@ -15,16 +15,7 @@ module.exports = (function() {
 
     mySearch.init = function(types) {
 
-        const sns = types['sns'].split(',');
-
-        for (let i in sns) {
-            mySearch.create.options(sns[i], types['keyword'], types['type']);
-        }
-
-        return variables['options'];
-    }
-
-    mySearch.start = function() {
+        return mySearch.create.options(types['sns'], types['keyword'], types['type']);
 
     }
 
@@ -38,6 +29,7 @@ module.exports = (function() {
             variables['options']['headers'] = properties[sns]['headers'];
             variables['options']['url'] = properties[sns][type] + encodeURI(keyword);
 
+            return variables['options'];
         }
 
         return create;
