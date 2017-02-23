@@ -8,12 +8,12 @@ const properties = require('./search.properties');
 // Load jQuery with the simulated jsdom window.
 $ = require('jquery')(window);
 
-module.exports = (function() {
+module.exports = (() => {
 
     const mySearch = {};
     const variables = {};
 
-    mySearch.init = function(types) {
+    mySearch.init = (types) => {
 
         const sub = {page:types['page'], sort:types['sort']};
 
@@ -21,10 +21,10 @@ module.exports = (function() {
 
     }
 
-    mySearch.create = (function() {
+    mySearch.create = (() => {
         const create = {};
 
-        create.options = function(sns, keyword, type, sub) {
+        create.options = (sns, keyword, type, sub) => {
 
             variables['options'] = {};
 
@@ -40,37 +40,37 @@ module.exports = (function() {
 
             // sub Options
             if (typeof(sub['page']) != 'undefined') {
-                next();
+                next(sub);
             }
 
             if (typeof(sub['sort']) != 'undefined') {
                 sort();
             }
 
-            function next() {
-                let pageno = sub['page'];
-
-                variables['options']['url'] += pageno < 4 ? '&pageno=' + pageno : '';
-                variables['options']['url'] += '&start=' + (pageno * 10);
-            }
-
-            function sort() {
-                variables['options']['url'] += '&sort=date';
-            }
-
             return variables['options'];
         }
 
-        return create;
-    }())
+        const next = (sub) => {
+            let pageno = sub['page'];
 
-    mySearch.parse = (function() {
+            variables['options']['url'] += pageno < 4 ? '&pageno=' + pageno : '';
+            variables['options']['url'] += '&start=' + (pageno * 10);
+        }
+
+        const sort = () => {
+            variables['options']['url'] += '&sort=date';
+        }
+
+        return create;
+    })();
+
+    mySearch.parse = (() => {
         const parse = {};
 
-        parse.extract = function(obj) {
+        parse.extract = (obj) => {
             const result = obj.hasOwnProperty('channel') ? obj['channel'] : obj;
 
-            return $.map(result, function(i,v) {
+            return $.map(result, (i,v) => {
 
                 if (typeof result[v] == 'object') {
                     return result[v];
@@ -81,8 +81,8 @@ module.exports = (function() {
         }
 
         return parse;
-    }())
+    })();
 
     return mySearch;
 
-}())
+})();

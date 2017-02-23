@@ -36,7 +36,7 @@ exports.show = (req, res) => {
         return res.status(404).json({error: 'Incorrect Path'});
     }
 
-    request.get(options, function (error, response, body) {
+    request.get(options, (error, response, body) => {
         if (!error && response.statusCode == 200) {
             res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
 
