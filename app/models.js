@@ -18,7 +18,6 @@ const sequelize = new Sequelize(
     }
 );
 
-
 const User = sequelize.define('members', {
     member_seq: {
         type: Sequelize.INTEGER,
@@ -35,7 +34,10 @@ const Keyword = sequelize.define('keywords', {
         autoIncrement: true,
         primaryKey: true
     },
-    keyword_content: DataTypes.STRING
+    keyword_content: {
+        type: Sequelize.STRING(20),
+        allowNull: false
+    }
 });
 
 const Search = sequelize.define('contents', {
@@ -44,7 +46,10 @@ const Search = sequelize.define('contents', {
         autoIncrement: true,
         primaryKey: true
     },
-    search_keyword: Sequelize.STRING(20),
+    search_keyword: {
+        type: Sequelize.STRING(20),
+        allowNull: false
+    },
     search_group: Sequelize.STRING(10),
     search_title: Sequelize.STRING(50),
     search_link: Sequelize.STRING(50),

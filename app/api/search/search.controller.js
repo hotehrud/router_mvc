@@ -18,6 +18,7 @@ exports.show = (req, res) => {
         sort: req.query.sort
     }
 
+    // DB에 키워드가 존재하면 DB 데이터 리턴
     models.Keyword.findOne({
         where: {
             keyword_content: params['keyword']
@@ -38,6 +39,9 @@ exports.show = (req, res) => {
     request.get(options, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
+
+            search.parse.extract($.parseJSON(body));
+
             res.end(body);
         } else {
             res.status(response.statusCode).end();

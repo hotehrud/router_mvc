@@ -64,6 +64,25 @@ module.exports = (function() {
         return create;
     }())
 
+    mySearch.parse = (function() {
+        const parse = {};
+
+        parse.extract = function(obj) {
+            const result = obj.hasOwnProperty('channel') ? obj['channel'] : obj;
+
+            return $.map(result, function(i,v) {
+
+                if (typeof result[v] == 'object') {
+                    return result[v];
+                }
+
+            });
+
+        }
+
+        return parse;
+    }())
+
     return mySearch;
 
 }())
