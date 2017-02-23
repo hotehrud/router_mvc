@@ -10,7 +10,7 @@ exports.index = (req, res) => {
 
 exports.show = (req, res) => {
     // ...
-    const types = {
+    const params = {
         keyword: req.params.keyword,
         sns: req.query.sns,
         type: req.query.type,
@@ -18,11 +18,21 @@ exports.show = (req, res) => {
         sort: req.query.sort
     }
 
+    models.Keyword.findOne({
+        where: {
+            keyword_content: params['keyword']
+        }
+    }).then(keyword => {
+        if (keyword) {
+            return res.json(keyword);
+        }
+    });
+
     const request = require('request');
-    const options = search.init(types);
+    const options = search.init(params);
 
     if (!options) {
-        res.sendStatus(404);
+        return res.status(404).json({error: 'Incorrect Path'});
     }
 
     request.get(options, function (error, response, body) {
