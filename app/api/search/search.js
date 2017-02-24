@@ -1,12 +1,4 @@
-// Load jsdom, and create a window.
-const jsdom = require("jsdom").jsdom;
-const doc = jsdom();
-const window = doc.defaultView;
-
 const properties = require('./search.properties');
-
-// Load jQuery with the simulated jsdom window.
-$ = require('jquery')(window);
 
 module.exports = (() => {
 
@@ -67,18 +59,16 @@ module.exports = (() => {
     mySearch.parse = (() => {
         const parse = {};
 
-        parse.extract = (obj) => {
-            const result = obj.hasOwnProperty('channel') ? obj['channel'] : obj;
+        parse.extract = (obj, sns) => {
+            const items = obj.hasOwnProperty('channel') ? obj['channel'] : obj;
 
-            return $.map(result, (i,v) => {
-
-                if (typeof result[v] == 'object') {
-                    return result[v];
+            return Object.keys(items).forEach(key => {
+                if (typeof items[key] == 'object') {
+                    return items[key];
                 }
-
             });
-
         }
+
 
         return parse;
     })();

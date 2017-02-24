@@ -40,7 +40,17 @@ exports.show = (req, res) => {
         if (!error && response.statusCode == 200) {
             res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
 
-            search.parse.extract($.parseJSON(body));
+            const items = search.parse.extract(JSON.parse(body), params['sns']);
+
+            //if (typeof items == 'object') {
+            //    items.map((item) => {
+            //        console.log(item);
+            //        //models.Search.create({
+            //        //    search_keyword: params['keyword'],
+            //        //    search_group: item
+            //        //}).then((result) => res.status(201).json(result))
+            //    })
+            //}
 
             res.end(body);
         } else {
