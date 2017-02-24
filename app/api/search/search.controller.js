@@ -41,7 +41,7 @@ exports.show = (req, res) => {
             res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
 
             const items = search.parse.extract(JSON.parse(body), params['sns']);
-
+console.log(items);
             //if (typeof items == 'object') {
             //    items.map((item) => {
             //        console.log(item);

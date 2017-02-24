@@ -61,14 +61,38 @@ module.exports = (() => {
 
         parse.extract = (obj, sns) => {
             const items = obj.hasOwnProperty('channel') ? obj['channel'] : obj;
+            let name;
 
-            return Object.keys(items).forEach(key => {
-                if (typeof items[key] == 'object') {
-                    return items[key];
+            for (const v in items) {
+                if (typeof items[v] == 'object') {
+                    name = v;
+                    break;
                 }
-            });
+            }
+
+            return parse.rename.getter(items[name], sns);
         }
 
+        parse.rename = (() => {
+
+            const company = {
+                naver : () => {
+                    return 'naver';
+                },
+                daum : () => {
+                    return 'daum';
+                }
+            }
+
+            const get = (items, sns) => {
+                return company[sns].call();
+            }
+
+            return {
+                getter : get
+            }
+
+        })()
 
         return parse;
     })();
