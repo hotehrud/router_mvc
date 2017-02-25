@@ -63,7 +63,7 @@ module.exports = (() => {
             const items = obj.hasOwnProperty('channel') ? obj['channel'] : obj;
             let name;
 
-            for (const v in items) {
+            for (let v in items) {
                 if (typeof items[v] == 'object') {
                     name = v;
                     break;
@@ -76,16 +76,29 @@ module.exports = (() => {
         parse.rename = (() => {
 
             const company = {
-                naver : () => {
-                    return 'naver';
-                },
-                daum : () => {
-                    return 'daum';
-                }
+                naver : (items) => create(items, properties['naver']['property']),
+                daum : (items) => create(items, properties['daum']['property'])
+            }
+
+            const create = (items, propertys) => {
+
+                // 객체 프로퍼티명 커스텀
+                return items.map( (item) => {
+                    return (() => {
+                        const obj = {};
+
+                        Object.keys(item).forEach( (key) => {
+                            propertys.hasOwnProperty(key) ? obj[propertys[key]] = item[key] : obj[key] = item[key]
+                        })
+
+                        return obj;
+                    })()
+                })
+
             }
 
             const get = (items, sns) => {
-                return company[sns].call();
+                return company[sns].call(null, items);
             }
 
             return {

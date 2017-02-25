@@ -15,7 +15,7 @@ const apiProperties = {
         searchImage: "https://openapi.naver.com/v1/search/image?query=",
         searchShop: "https://openapi.naver.com/v1/search/shop?query=",
         searchDoc: "https://openapi.naver.com/v1/search/doc?query=",
-        returnProperty: ['title', 'link', 'description', 'bloggername', 'bloggerlink', 'postdate']
+        property: {title: 'title', link: 'link', description: 'desc', bloggername: 'author', postdate: 'date'}
     },
     daum: {
         apiKey: "a5b0eef3c46e86443e3b73624f11488a",
@@ -27,7 +27,9 @@ const apiProperties = {
         searchKin: "https://apis.daum.net/search/knowledge?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
         searchBook: "https://apis.daum.net/search/book?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
         searchCafe: "https://apis.daum.net/search/cafe?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
-        returnProperty: ['title', 'link', 'description', 'author', 'comment', 'pubDate']
+        property: ['title', 'link', 'description', 'author', 'comment', 'pubDate'],
+        property: {title: 'title', link: 'link', description: 'desc', author: 'author', pubDate: 'date'}
+
     }
 }
 
