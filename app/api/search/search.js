@@ -82,7 +82,7 @@ module.exports = (() => {
 
             const create = (items, propertys) => {
 
-                // 객체 프로퍼티명 커스텀
+                // Object Property name Customizing
                 return items.map( (item) => {
                     return (() => {
                         const obj = {};

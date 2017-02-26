@@ -27,7 +27,6 @@ const apiProperties = {
         searchKin: "https://apis.daum.net/search/knowledge?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
         searchBook: "https://apis.daum.net/search/book?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
         searchCafe: "https://apis.daum.net/search/cafe?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
-        property: ['title', 'link', 'description', 'author', 'comment', 'pubDate'],
         property: {title: 'title', link: 'link', description: 'desc', author: 'author', pubDate: 'date'}
 
     }
