@@ -34,7 +34,7 @@ const Keyword = sequelize.define('keywords', {
         autoIncrement: true,
         primaryKey: true
     },
-    keyword_content: {
+    keyword_name: {
         type: Sequelize.STRING(20),
         allowNull: false
     }
