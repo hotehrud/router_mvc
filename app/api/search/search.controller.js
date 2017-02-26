@@ -59,7 +59,7 @@ exports.show = (req, res) => {
                         if (typeof items == 'object') {
 
                             // Get - Sync database
-                            const promises = items.map(function(item) {
+                            const promises = items.map( (item) => {
 
                                 return models.Search.create({
                                     search_keyword: keyword,
@@ -71,14 +71,14 @@ exports.show = (req, res) => {
                                     search_image: item['image'],
                                     search_data: item['data']
                                 })
-                                    .catch(function(err) {
+                                    .catch( (err) => {
                                         //console.log(err)
                                         return Promise.reject();
                                     });
                             });
 
                             Promise.all(promises)
-                                .then(function() {
+                                .then( () => {
 
                                     models.Search.findAll({
                                         where: {
@@ -98,7 +98,7 @@ exports.show = (req, res) => {
                                             return res.end(JSON.stringify(search));
                                         });
                                 })
-                                .catch(function(err){
+                                .catch( (err) => {
                                     console.log(err)
                                     return res.status(500).json({error: err});
                                 })
