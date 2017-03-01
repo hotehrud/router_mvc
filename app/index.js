@@ -17,6 +17,8 @@ app.use(function (req, res, next) {
 
 app.use('/user', require('./api/user/index.js'));
 
+app.use('/keyword', require('./api/keyword/index.js'));
+
 app.use('/search', require('./api/search/index.js'));
 
 module.exports = app;
