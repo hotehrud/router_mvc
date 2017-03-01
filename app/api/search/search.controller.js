@@ -96,7 +96,8 @@ exports.show = (req, res) => {
 
                                             // Keyword Insert
                                             models.Keyword.create({
-                                                keyword_name: keyword
+                                                keyword_name: keyword,
+                                                keyword_count: 1
                                             })
 
                                             return res.status(200).end(JSON.stringify(search));
