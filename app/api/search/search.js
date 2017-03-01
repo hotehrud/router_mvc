@@ -24,10 +24,6 @@ module.exports = (() => {
                 variables['options']['headers'] = properties[sns]['headers'];
             }
 
-            if (typeof(properties[sns][type]) == 'undefined') {
-                return false;
-            }
-
             variables['options']['url'] = properties[sns][type] + encodeURI(keyword);
 
             // sub Options

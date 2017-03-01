@@ -4,7 +4,7 @@ const search = require('./search');
 
 exports.index = (req, res) => {
     // ...
-    res.send("Hello Search");
+    return res.status(200).json({message: "Hello Search"});
 };
 
 exports.show = (req, res) => {
@@ -17,6 +17,10 @@ exports.show = (req, res) => {
         sort: req.query.sort
     }
     let keyword = params['keyword'];
+
+    if (typeof(params['sns']) == 'undefined' || typeof(params['type']) == 'undefined') {
+        return res.status(404).json({error: 'Incorrect Parameters'});
+    }
 
     // Get - If keyword is exist in DB
     models.Keyword.findOne({
@@ -38,7 +42,7 @@ exports.show = (req, res) => {
                             return res.status(500).json({error: 'Database Error'});
                         }
 
-                        return res.end(JSON.stringify(search));
+                        return res.status(200).end(JSON.stringify(search));
                     });
             } else {
                 const request = require('request');
@@ -51,7 +55,7 @@ exports.show = (req, res) => {
                 // Request - Open API
                 request.get(options, (error, response, body) => {
                     if (!error && response.statusCode == 200) {
-                        res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
+                        //res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
 
                         // Parse - Return Value in Open API
                         const items = search.parse.extract(JSON.parse(body), params['sns']);
@@ -95,7 +99,7 @@ exports.show = (req, res) => {
                                                 keyword_name: keyword
                                             })
 
-                                            return res.end(JSON.stringify(search));
+                                            return res.status(200).end(JSON.stringify(search));
                                         });
                                 })
                                 .catch( (err) => {
