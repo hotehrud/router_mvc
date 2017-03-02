@@ -10,9 +10,10 @@ const environments = {
             port: '3306'
         },
         redis: {
-            password: "redis",
+            password: "mygumiredis*0707~!",
             host: "localhost",
-            port: 6379
+            port: 6379,
+            keyword: 1
         }
     },
 
