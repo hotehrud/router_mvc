@@ -35,6 +35,13 @@ exports.list = (req, res) => {
 }
 
 exports.create = (req, res) => {
+    let keyword = req.body.keyword_name;
 
-    return res.status(200).json(req.body);
+    redis.get(keyword, (err, reply) => {
+        if (err) throw err;
+
+        reply ? redis.set(keyword, ++reply) : redis.set(keyword, 1);
+    })
+
+    return res.status(204).end();
 }

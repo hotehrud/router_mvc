@@ -1,11 +1,11 @@
 const redis = require('redis');
 const config = require('./config/environments')['redis'];
 
-module.exports = (() => {
+module.exports = (use) => {
     const myRedis = {};
     const redisClient = redis.createClient(config.port,config.host);
 
-    myRedis.init = (use) => {
+    myRedis.init = (() => {
 
         redisClient.on('error', (err) => {
             if (err) throw err;
@@ -18,7 +18,7 @@ module.exports = (() => {
             myRedis.select(use);
         });
 
-    }
+    })()
 
     myRedis.select = (use) => {
         redisClient.select(config[use], (err) => {
@@ -28,5 +28,7 @@ module.exports = (() => {
         })
     }
 
-    return myRedis.init;
-})();
+    //myRedis.get = () => { redisClient }
+
+    return redisClient;
+};
