@@ -9,7 +9,7 @@ router.get('/', controller.index);
 router.get('/spec/:keyword', controller.show);
 
 // All Keyword
-router.get('/list/:keyword', controller.list);
+router.get('/list', controller.list);
 
 // Rank Keyword
 router.get('/rank', controller.rank);
