@@ -36,13 +36,25 @@ const Keyword = sequelize.define('keywords', {
     },
     keyword_name: {
         type: Sequelize.STRING(20),
-        allowNull: false,
-        unique: true
+        allowNull: false
     },
     keyword_count: {
         type: Sequelize.INTEGER,
         allowNull: false
     }
+}, {
+    indexes: [
+        // Create a unique index on email
+        {
+            unique: true,
+            fields: ['keyword_name']
+        },
+        {
+            index: true,
+            fields: ['keyword_count']
+        }
+    ]
+
 });
 
 const Search = sequelize.define('contents', {
@@ -64,6 +76,14 @@ const Search = sequelize.define('contents', {
     search_date: {
         type: DataTypes.DATEONLY
     }
+}, {
+    indexes: [
+        {
+            index: true,
+            fields: ['search_keyword']
+        }
+    ]
+
 });
 
 module.exports = {
