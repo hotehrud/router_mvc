@@ -37,12 +37,11 @@ const Keyword = sequelize.define('keywords', {
     keyword_name: {
         type: Sequelize.STRING(20),
         allowNull: false,
-        unique: 'compositeIdx'
+        unique: true
     },
     keyword_count: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        unique: 'compositeIdx'
+        allowNull: false
     }
 });
 

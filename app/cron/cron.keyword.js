@@ -14,21 +14,47 @@ const job = new CronJob({
 
             const arrayObject = [];
 
-            const callback = () => {
+            const sum = () => {
+                // count = db + redis
                 for(let i in arrayObject) {
-                    console.log(arrayObject[i]);
+
+                    keyword.findOne({
+                        attributes: ['keyword_count'],
+                        where: {
+                            keyword_name: arrayObject[i]['name']
+                        }
+                    }).then(value => {
+
+                        if (value) {
+                            arrayObject[i]['count'] += Number(value['keyword_count']);
+                        }
+
+                        // insert or update
+                        keyword.upsert({
+                            keyword_name: arrayObject[i]['name'],
+                            keyword_count: arrayObject[i]['count']
+                        }).then( (rr) => {
+                            //console.log(rr)
+                        })
+                    });
+
                 }
+
+
+
             }
 
+            // Get - the number of value about keyword in redis
             (loop = (i) => {
                 const promise = new Promise((resolve, reject) => {
 
                     redis.get(keys[i], (err, value) => {
+
                         if (err) throw err;
 
                         const obj = {
                             name: keys[i],
-                            count: value
+                            count: Number(value)
                         }
 
                         arrayObject.push(obj);
@@ -42,7 +68,7 @@ const job = new CronJob({
                     })
 
                 })
-                    .then( () => ++i < keys.length ? loop(i) : callback());
+                    .then( () => ++i < keys.length ? loop(i) : sum());
 
             })(0);
 
