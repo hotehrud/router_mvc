@@ -34,6 +34,21 @@ exports.list = (req, res) => {
         })
 }
 
+exports.rank = (req, res) => {
+    let pageno = req.query.pageno ? req.query.pageno * 10 : 0;
+
+    models.Keyword.findAll({
+        order: 'keyword_count DESC',
+        offset: pageno,
+        limit: 10
+    })
+        .then(result => {
+
+            return result.length ? res.status(200).json(result) : res.status(200).json({message: 'empty'})
+
+        })
+}
+
 exports.create = (req, res) => {
     let keyword = req.body.keyword_name;
 
