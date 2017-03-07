@@ -21,7 +21,8 @@ const job = new CronJob({
                     keyword.findOne({
                         attributes: ['keyword_count'],
                         where: {
-                            keyword_name: arrayObject[i]['name']
+                            keyword_name: arrayObject[i]['name'],
+                            keyword_group: arrayObject[i]['group']
                         }
                     }).then(value => {
 
@@ -32,10 +33,14 @@ const job = new CronJob({
                         // insert or update
                         keyword.upsert({
                             keyword_name: arrayObject[i]['name'],
+                            keyword_group: arrayObject[i]['group'],
                             keyword_count: arrayObject[i]['count']
                         }).then( (rr) => {
                             //console.log(rr)
-                        })
+                        }).catch(function (err) {
+                            // handle error;
+                            if (err) throw err;
+                        });
                     });
 
                 }
@@ -50,10 +55,13 @@ const job = new CronJob({
 
                     redis.get(keys[i], (err, value) => {
 
+                        const key = keys[i].split('&');
+
                         if (err) throw err;
 
                         const obj = {
-                            name: keys[i],
+                            name: key[0],
+                            group: key[1],
                             count: Number(value)
                         }
 

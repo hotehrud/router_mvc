@@ -17,6 +17,7 @@ exports.show = (req, res) => {
         sort: req.query.sort
     }
     let keyword = params['keyword'];
+    let group = params['type'];
 
     if (typeof(params['sns']) == 'undefined' || typeof(params['type']) == 'undefined') {
         return res.status(404).json({error: 'Incorrect Parameters'});
@@ -25,7 +26,8 @@ exports.show = (req, res) => {
     // Get - If keyword is exist in DB
     models.Keyword.findOne({
         where: {
-            keyword_name: keyword
+            keyword_name: keyword,
+            keyword_group: group
         }
     })
         .then(instance => {
@@ -34,7 +36,8 @@ exports.show = (req, res) => {
 
                 models.Search.findAll({
                     where: {
-                        search_keyword: keyword
+                        search_keyword: keyword,
+                        search_group: group
                     }
                 })
                     .then(search => {
@@ -97,8 +100,12 @@ exports.show = (req, res) => {
                                             // Keyword Insert
                                             models.Keyword.create({
                                                 keyword_name: keyword,
-                                                keyword_count: 1
-                                            })
+                                                keyword_count: 1,
+                                                keyword_group: group
+                                            }).catch(function (err) {
+                                                // handle error;
+                                                if (err) throw err;
+                                            });
 
                                             return res.status(200).end(JSON.stringify(search));
                                         });

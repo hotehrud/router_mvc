@@ -41,13 +41,16 @@ const Keyword = sequelize.define('keywords', {
     keyword_count: {
         type: Sequelize.INTEGER,
         allowNull: false
+    },
+    keyword_group: {
+        type: Sequelize.STRING(20),
+        allowNull: false
     }
 }, {
     indexes: [
-        // Create a unique index on email
         {
             unique: true,
-            fields: ['keyword_name']
+            fields: ['keyword_name', 'keyword_group']
         },
         {
             index: true,
@@ -67,7 +70,7 @@ const Search = sequelize.define('contents', {
         type: Sequelize.STRING(20),
         allowNull: false
     },
-    search_group: Sequelize.STRING(10),
+    search_group: Sequelize.STRING(20),
     search_title: Sequelize.STRING(50),
     search_link: Sequelize.STRING(50),
     search_desc: Sequelize.STRING(255),

@@ -51,12 +51,17 @@ exports.rank = (req, res) => {
 
 exports.create = (req, res) => {
     let keyword = req.body.keyword_name;
+    let group = req.body.keyword_group.split(',');
 
-    redis.get(keyword, (err, reply) => {
-        if (err) throw err;
+    for (let i in group) {
+        let key = keyword + '&' + group[i];
 
-        reply ? redis.set(keyword, ++reply) : redis.set(keyword, 1);
-    })
+        redis.get(key, (err, reply) => {
+            if (err) throw err;
+
+            reply ? redis.set(key, ++reply) : redis.set(key, 1);
+        })
+    }
 
     return res.status(204).end();
 }
