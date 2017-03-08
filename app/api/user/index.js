@@ -13,4 +13,7 @@ router.post('/', controller.create);
 
 router.put('/:id', controller.update);
 
+// SNS login callback
+router.get('/login/callback', controller.callback)
+
 module.exports = router;

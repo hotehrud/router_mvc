@@ -1,4 +1,5 @@
 const models = require('../../models');
+const user = require('./user');
 
 exports.index = (req, res) => {
     // ...
@@ -83,4 +84,24 @@ exports.update = (req, res) => {
         res.status(204).send();
     });
 
+}
+
+exports.callback = (req, res) => {
+    const params = {
+        code: req.query.code,
+        state: req.query.state
+    }
+
+    const request = require('request');
+    const options = user.token(params)
+
+    request.get(options, (error, response, body) => {
+        if (!error && response.statusCode == 200) {
+            res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
+            res.end(body);
+        } else {
+            res.status(response.statusCode).end();
+            console.log('error = ' + response.statusCode);
+        }
+    });
 }

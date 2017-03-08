@@ -1,5 +1,4 @@
 const models = require('../../models');
-const config = require('../../config/environments')['api'];
 const search = require('./search');
 
 exports.index = (req, res) => {
