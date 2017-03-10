@@ -20,16 +20,18 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(cookieParser());
+//app.use(cookieParser('mygumi'));
 app.use(session({
     store: new RedisStore({
         client: redis,
         host: 'localhost',
         port: 6379,
-        prefix : "session:"
+        prefix : "session:",
+        resave: false,
+        saveUninitialized: false
     }),
     secret: 'mygumi',
-    cookie: { maxAge: 2592000000, secure: true }
+    cookie: { maxAge: 2592000000, secure: false } // secure - https request
 }));
 
 //set passport
