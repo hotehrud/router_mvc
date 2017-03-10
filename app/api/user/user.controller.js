@@ -1,5 +1,4 @@
 const models = require('../../models');
-const user = require('./user');
 
 exports.index = (req, res) => {
     // ...
@@ -77,31 +76,15 @@ exports.update = (req, res) => {
         { member_name: name }, /* set attributes' value */
         { where: { member_id : id }} /* where criteria */
     ).then(user => {
-        if (!user) {
-            return res.status(404).json({error: 'No User'});
-        }
+            if (!user) {
+                return res.status(404).json({error: 'No User'});
+            }
 
-        res.status(204).send();
-    });
+            res.status(204).send();
+        });
 
 }
 
-exports.callback = (req, res) => {
-    const params = {
-        code: req.query.code,
-        state: req.query.state
-    }
-
-    const request = require('request');
-    const options = user.token(params)
-
-    request.get(options, (error, response, body) => {
-        if (!error && response.statusCode == 200) {
-            res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
-            res.end(body);
-        } else {
-            res.status(response.statusCode).end();
-            console.log('error = ' + response.statusCode);
-        }
-    });
+exports.saveOAuthUserProfile = (profile, done) => {
+    done(profile);
 }

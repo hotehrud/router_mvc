@@ -21,12 +21,18 @@
   },
   "homepage": "https://github.com/hotehrud/router_mvc#readme",
   "dependencies": {
+    "connect-redis": "^3.2.0",
+    "cookie-parser": "^1.4.3",
     "cron": "^1.2.1",
     "express": "^4.14.0",
     "express-generator": "^4.14.0",
+    "express-session": "^1.15.1",
+    "flash": "^1.1.0",
     "jQuery": "^1.7.4",
     "jquery": "^3.1.1",
     "jsdom": "^9.11.0",
+    "passport": "^0.3.2",
+    "passport-naver": "^1.0.4",
     "redis": "^2.6.5",
     "request": "^2.79.0",
     "sequelize": "^3.29.0"
