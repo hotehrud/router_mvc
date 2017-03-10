@@ -26,15 +26,15 @@ app.use(session({
         client: redis,
         host: 'localhost',
         port: 6379,
-        prefix : "session:",
-        saveUninitialized: false,
-        resave: false
+        prefix : "session:"
     }),
     secret: 'mygumi',
-    cookie: { maxAge: 2592000000 }
+    cookie: { maxAge: 2592000000, secure: true }
 }));
 
-app.use(require('flash')());
+//set passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/user', require('./api/user/index.js'));
 
@@ -47,9 +47,5 @@ app.get('/', (req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'});
     res.end("<a href='"+ api_url + "'><img height='50' src='http://static.nid.naver.com/oauth/small_g_in.PNG'/></a>");
 })
-
-//set passport
-app.use(passport.initialize());
-app.use(passport.session());
 
 module.exports = app;

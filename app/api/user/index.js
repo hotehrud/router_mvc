@@ -18,6 +18,9 @@ router.put('/:id', controller.update);
 // SNS login callback
 router.get('/auth/naver', passport.authenticate('naver'));
 
-router.get('/auth/naver/callback', passport.authenticate('naver'));
+router.get('/auth/naver/callback', passport.authenticate('naver', {
+    failureRedirect: 'signin',
+    successRedirect: '/'
+}));
 
 module.exports = router;

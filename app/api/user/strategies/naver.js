@@ -9,7 +9,7 @@ module.exports = function(passport) {
         callbackURL: config.callback_url
     }, (accessToken, refreshToken, profile, done) => {
 
-        controller.saveOAuthUserProfile(JSON.stringify(profile), done);
+        controller.saveOAuthUserProfile(profile, done);
 
     }));
 };
