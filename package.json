@@ -34,6 +34,7 @@
     "passport": "^0.3.2",
     "passport-daum": "0.0.1",
     "passport-daum-oauth2": "0.0.3",
+    "passport-kakao": "0.0.4",
     "passport-naver": "^1.0.4",
     "redis": "^2.6.5",
     "request": "^2.79.0",

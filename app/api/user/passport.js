@@ -12,5 +12,6 @@ passport.deserializeUser(function (user, done) {
 
 require('./strategies/naver.js')(passport);
 require('./strategies/daum.js')(passport);
+require('./strategies/kakao.js')(passport);
 
 module.exports = passport;

@@ -30,4 +30,11 @@ router.get('/auth/daum/callback', passport.authenticate('daum', {
     successRedirect: '/'
 }));
 
+router.get('/auth/kakao', passport.authenticate('kakao'));
+
+router.get('/auth/kakao/callback', passport.authenticate('kakao', {
+    failureRedirect: 'signin',
+    successRedirect: '/'
+}));
+
 module.exports = router;
