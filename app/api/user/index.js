@@ -23,4 +23,11 @@ router.get('/auth/naver/callback', passport.authenticate('naver', {
     successRedirect: '/'
 }));
 
+router.get('/auth/daum', passport.authenticate('daum'));
+
+router.get('/auth/daum/callback', passport.authenticate('daum', {
+    failureRedirect: 'signin',
+    successRedirect: '/'
+}));
+
 module.exports = router;

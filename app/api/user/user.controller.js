@@ -86,5 +86,6 @@ exports.update = (req, res) => {
 }
 
 exports.saveOAuthUserProfile = (profile, done) => {
+    console.log(profile)
     done(null, profile['id']);
 }
