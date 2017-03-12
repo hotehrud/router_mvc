@@ -1,4 +1,5 @@
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const controller = require('./bookmark.controller');
 
 router.get('/', controller.index);
@@ -7,12 +8,12 @@ router.get('/', controller.index);
 router.get('/spec/:id', controller.show);
 
 // All bookmark search
-router.get('/list', controller.show);
+router.get('/list', controller.list);
 
 // bookmark delete
 router.delete('/:id', controller.destroy);
 
 // bookmark create
-router.post('/:id', controller.create);
+router.post('/', controller.create);
 
 module.exports = router;

@@ -132,9 +132,28 @@ const Search = sequelize.define('contents', {
 
 });
 
+const Bookmark = sequelize.define('bookmark', {
+    bookmark_seq : {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    bookmark_id: Sequelize.INTEGER,
+    bookmark_user: Sequelize.STRING(50)
+}, {
+    indexes: [
+        {
+            index: true,
+            fields: ['bookmark_user']
+        }
+    ]
+
+});
+
 module.exports = {
     sequelize: sequelize,
     User: User,
     Search: Search,
-    Keyword: Keyword
+    Keyword: Keyword,
+    Bookmark: Bookmark
 }
