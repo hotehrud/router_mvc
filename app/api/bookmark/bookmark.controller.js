@@ -7,7 +7,7 @@ exports.show = (req, res) => {
 
 }
 
-exports.destory = (req, res) => {
+exports.destroy = (req, res) => {
 
 }
 

@@ -15,4 +15,4 @@ router.delete('/:id', controller.destroy);
 // bookmark create
 router.post('/:id', controller.create);
 
-exports.modules = router;
+module.exports = router;
