@@ -44,6 +44,8 @@ app.use('/keyword', require('./api/keyword/index.js'));
 
 app.use('/search', require('./api/search/index.js'));
 
+app.use('/bookmark', require('./api/bookmark/index.js');
+
 app.get('/', (req, res) => {
     let naver = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=NXUnBi1hGRDD0YALBt0h&redirect_uri=http://52.79.164.94:3000/user/auth/naver/callback&state=312';
     let daum = 'https://apis.daum.net/oauth2/authorize?client_id=8930561538932112719&redirect_uri=http://52.79.164.94:3000/user/auth/daum/callback&response_type=code';
