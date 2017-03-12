@@ -33,6 +33,8 @@ const User = sequelize.define('members', {
     member_nickname: Sequelize.STRING(50),
     member_email: Sequelize.STRING(50),
     member_image: Sequelize.STRING(50),
+    member_age: Sequelize.STRING(50),
+    member_birthday: Sequelize.STRING(50),
     member_thumbnail: Sequelize.STRING(50),
     member_accessToken: Sequelize.STRING(100),
     member_refreshToken: Sequelize.STRING(100)
@@ -49,6 +51,15 @@ const User = sequelize.define('members', {
         setToken: function(token) {
             this.member_accessToken = token.accessToken;
             this.member_refreshToken = token.refreshToken;
+        },
+        setProviderData: function(data) {
+            this.member_name = data['username'] ? data['username'] : null;
+            this.member_nickname = data['nickname'] ? data['nickname'] : null;
+            this.member_email = data['email'] ? data['email'] : null;
+            this.member_image = data['profileImage'] ? data['profileImage'] : null;
+            this.member_age = data['age'] ? data['age'] : null;
+            this.member_birthday = data['birthday'] ? data['birthday'] : null;
+            this.member_thumbnail = data['thumbnailImage'] ? data['thumbnailImage'] : null;
         }
     },
     indexes: [

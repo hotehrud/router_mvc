@@ -15,12 +15,14 @@ module.exports = function(passport) {
             token.refreshToken = refreshToken;
 
             const providerUserProfile = {
-                username: profile.username,
-                nickname: profile.displayName,
                 provider: 'kakao',
                 id: profile.id,
-                profileImage: properties.profile_image,
-                thumbnailImage: properties.thumbnail_image,
+                providerData: {
+                    username: profile.username,
+                    nickname: profile.displayName,
+                    profileImage: properties.profile_image,
+                    thumbnailImage: properties.thumbnail_image
+                },
                 token: token
             };
 

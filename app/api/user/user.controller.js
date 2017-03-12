@@ -100,6 +100,7 @@ exports.saveOAuthUserProfile = (profile, done) => {
                 User.create({
                     member_provider: profile.provider,
                     member_id: profile.id,
+                    setProviderData: profile.providerData,
                     setToken: profile.token
                 })
                     .then(user => {
