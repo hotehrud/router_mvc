@@ -15,26 +15,16 @@ router.post('/', controller.create);
 
 router.put('/:id', controller.update);
 
-// SNS login callback
-router.get('/auth/naver', passport.authenticate('naver'));
+router.get('/auth/naver/callback', passport.authenticate('naver'), (req, res) => {
+    req.user ? res.status(200).json({msg: req.user}) : res.status(500).json({msg: "Interal Error"});
+});
 
-router.get('/auth/naver/callback', passport.authenticate('naver', {
-    failureRedirect: 'signin',
-    successRedirect: '/'
-}));
+router.get('/auth/daum/callback', passport.authenticate('daum'), (req, res) => {
+    req.user ? res.status(200).json({msg: req.user}) : res.status(500).json({msg: "Interal Error"});
+});
 
-router.get('/auth/daum', passport.authenticate('daum'));
-
-router.get('/auth/daum/callback', passport.authenticate('daum', {
-    failureRedirect: 'signin',
-    successRedirect: '/'
-}));
-
-router.get('/auth/kakao', passport.authenticate('kakao'));
-
-router.get('/auth/kakao/callback', passport.authenticate('kakao', {
-    failureRedirect: 'signin',
-    successRedirect: '/'
-}));
+router.get('/auth/kakao/callback', passport.authenticate('kakao'), (req, res) => {
+    req.user ? res.status(200).json({msg: req.user}) : res.status(500).json({msg: "Interal Error"});
+});
 
 module.exports = router;
