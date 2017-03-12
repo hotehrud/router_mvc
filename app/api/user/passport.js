@@ -7,7 +7,7 @@ passport.serializeUser(function (id, done) {
 });
 passport.deserializeUser(function (user, done) {
     console.log("deserializeUser")
-    done(null, user);
+    return done(null, user);
 });
 
 require('./strategies/naver.js')(passport);

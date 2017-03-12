@@ -24,8 +24,40 @@ const User = sequelize.define('members', {
         autoIncrement: true,
         primaryKey: true
     },
-    member_id: Sequelize.INTEGER,
-    member_name: Sequelize.STRING(10)
+    member_provider: {
+        type: Sequelize.STRING(20),
+        allowNull: false
+    },
+    member_id: Sequelize.STRING(50),
+    member_name: Sequelize.STRING(50),
+    member_nickname: Sequelize.STRING(50),
+    member_email: Sequelize.STRING(50),
+    member_image: Sequelize.STRING(50),
+    member_thumbnail: Sequelize.STRING(50),
+    member_accessToken: Sequelize.STRING(100),
+    member_refreshToken: Sequelize.STRING(100)
+}, {
+    getterMethods: {
+        getToken: function() {
+            return this.member_accessToken + '*' + this.member_refreshToken;
+        },
+        getId: function() {
+            return this.member_id;
+        }
+    },
+    setterMethods: {
+        setToken: function(token) {
+            this.member_accessToken = token.accessToken;
+            this.member_refreshToken = token.refreshToken;
+        }
+    },
+    indexes: [
+        {
+            index: true,
+            fields: ['member_provider']
+        }
+    ]
+
 });
 
 const Keyword = sequelize.define('keywords', {

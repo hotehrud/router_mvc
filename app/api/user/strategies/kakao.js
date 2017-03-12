@@ -9,7 +9,22 @@ module.exports = function(passport) {
         },
         function(accessToken, refreshToken, profile, done){
 
-            controller.saveOAuthUserProfile(profile, done);
+            const token = {};
+            const properties = profile._json.properties;
+            token.accessToken = accessToken;
+            token.refreshToken = refreshToken;
+
+            const providerUserProfile = {
+                username: profile.username,
+                nickname: profile.displayName,
+                provider: 'kakao',
+                id: profile.id,
+                profileImage: properties.profile_image,
+                thumbnailImage: properties.thumbnail_image,
+                token: token
+            };
+
+            controller.saveOAuthUserProfile(providerUserProfile, done);
 
         }
 

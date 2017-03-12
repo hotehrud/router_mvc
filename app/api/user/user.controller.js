@@ -1,4 +1,4 @@
-const models = require('../../models');
+const User = require('../../models')['User'];
 
 exports.index = (req, res) => {
     // ...
@@ -17,7 +17,7 @@ exports.show = (req, res) => {
         return res.status(400).json({error: 'Incorrect id'});
     }
 
-    models.User.findOne({
+    User.findOne({
         where: {
             member_id: id
         }
@@ -40,7 +40,7 @@ exports.destroy = (req, res) => {
         return res.status(400).json({error: 'Incorrect id'});
     }
 
-    models.User.destroy({
+    User.destroy({
         where: {
             member_id: id
         }
@@ -59,7 +59,7 @@ exports.create = (req, res) => {
     const id = req.body.member_id;
     const name = req.body.member_name;
 
-    models.User.create({
+    User.create({
         member_id: id,
         member_name: name
     }).then((user_result) => res.status(201).json(user_result))
@@ -72,7 +72,7 @@ exports.update = (req, res) => {
     const id = parseInt(req.params.id, 10);
     const name = req.body.member_name;
 
-    models.User.update(
+    User.update(
         { member_name: name }, /* set attributes' value */
         { where: { member_id : id }} /* where criteria */
     ).then(user => {
@@ -86,6 +86,34 @@ exports.update = (req, res) => {
 }
 
 exports.saveOAuthUserProfile = (profile, done) => {
-    console.log(profile)
-    done(null, profile['id']);
+
+    User.findOne({
+        where: {
+            member_provider: profile.provider,
+            member_id: profile.id
+        }
+    })
+        .then(user => {
+
+            if (!user) {
+
+                User.create({
+                    member_provider: profile.provider,
+                    member_id: profile.id,
+                    setToken: profile.token
+                })
+                    .then(user => {
+                        done(null, user.getId);
+                    })
+                    .catch(function (err) {
+                        // handle error;
+                        if (err) throw err;
+                    });
+
+
+            } else {
+                done(null, profile.id);
+            }
+        })
+
 }
