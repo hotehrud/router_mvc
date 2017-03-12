@@ -85,6 +85,10 @@ exports.update = (req, res) => {
 
 }
 
+exports.callback = (req, res) => {
+    req.user ? res.status(200).json({msg: req.user}) : res.status(500).json({msg: "Interal Error"});
+}
+
 exports.saveOAuthUserProfile = (profile, done) => {
 
     User.findOne({

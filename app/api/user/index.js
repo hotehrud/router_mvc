@@ -15,16 +15,10 @@ router.post('/', controller.create);
 
 router.put('/:id', controller.update);
 
-router.get('/auth/naver/callback', passport.authenticate('naver'), (req, res) => {
-    req.user ? res.status(200).json({msg: req.user}) : res.status(500).json({msg: "Interal Error"});
-});
+router.get('/auth/naver/callback', passport.authenticate('naver'), controller.callback);
 
-router.get('/auth/daum/callback', passport.authenticate('daum'), (req, res) => {
-    req.user ? res.status(200).json({msg: req.user}) : res.status(500).json({msg: "Interal Error"});
-});
+router.get('/auth/daum/callback', passport.authenticate('daum'), controller.callback);
 
-router.get('/auth/kakao/callback', passport.authenticate('kakao'), (req, res) => {
-    req.user ? res.status(200).json({msg: req.user}) : res.status(500).json({msg: "Interal Error"});
-});
+router.get('/auth/kakao/callback', passport.authenticate('kakao'), controller.callback);
 
 module.exports = router;
