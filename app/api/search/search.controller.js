@@ -75,7 +75,7 @@ exports.show = (req, res) => {
                                     search_desc: item['desc'],
                                     search_author: item['author'],
                                     search_image: item['image'],
-                                    search_data: item['data']
+                                    search_date: item['date']
                                 })
                                     .catch( (err) => {
                                         //console.log(err)
