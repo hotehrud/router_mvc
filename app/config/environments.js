@@ -13,8 +13,9 @@ const environments = {
             password: "mygumiredis*0707~!",
             host: "localhost",
             port: 6379,
+            user: 0,
             keyword: 1,
-            user: 0
+            search: 2
         }
     },
 
