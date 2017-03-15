@@ -1,8 +1,15 @@
 const models = require('../../models');
 const search = require('./search');
+const redis = require('../../redis')('search');
 
 exports.index = (req, res) => {
     // ...
+    let user = req.user;
+
+    redis.hgetall(user, (err, targets) => {
+        console.log(targets)
+    });
+
     return res.status(200).json({message: "Hello Search"});
 };
 
@@ -126,3 +133,7 @@ exports.show = (req, res) => {
         })
 
 };
+
+exports.create = (req, res) => {
+
+}
