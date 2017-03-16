@@ -2,16 +2,60 @@ const models = require('../../models');
 const search = require('./search');
 const redis = require('../../redis')['db_2'];
 
+const request = require('request');
+
+const naver = require('./thirdparty/naver');
+const daum = require('./thirdparty/daum');
+
 exports.index = (req, res) => {
     // ...
+    const result = [];
+
     let user = req.user;
+    const params = {
+        keyword: req.params.keyword,
+        sns: req.query.sns,
+        type: req.query.type,
+        page: req.query.page,
+        sort: req.query.sort
+    }
 
     redis.hgetall(user, (err, targets) => {
-        console.log(targets)
+
+        require('async').parallel([
+            function (callback) {
+                if (targets['naver'] == 1) {
+                    console.log('naver')
+                    naver.parse.params(params, store);
+                }
+                callback();
+            },
+            function (callback) {
+                if (targets['daum'] == 1) {
+                    console.log('daum')
+                    daum.parse.params(params, store);
+                }
+                callback();
+            },
+            function (callback) {
+                if (targets['google'] == 1) {
+                    console.log('google')
+                }
+                callback();
+            },
+        ], next);
+
     });
 
-    return res.status(200).json({message: "Hello Search"});
-};
+    function store(options) {
+        result.push(options);
+    }
+
+    function next() {
+        console.log(result);
+        return res.status(200).json({message: "Hello Search"});
+    }
+}
 
 exports.show = (req, res) => {
     // ...
@@ -54,7 +98,6 @@ exports.show = (req, res) => {
                         return res.status(200).end(JSON.stringify(search));
                     });
             } else {
-                const request = require('request');
                 const options = search.init(params);
 
                 if (!options) {
