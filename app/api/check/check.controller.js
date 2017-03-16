@@ -1,4 +1,4 @@
-const redis = require('../../redis')('search');
+const redis = require('../../redis')['db_2'];
 
 exports.init = (req, res) => {
     let user = req.user;

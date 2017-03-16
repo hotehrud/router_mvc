@@ -1,6 +1,6 @@
 const models = require('../../models');
 const search = require('./search');
-const redis = require('../../redis')('search');
+const redis = require('../../redis')['db_2'];
 
 exports.index = (req, res) => {
     // ...

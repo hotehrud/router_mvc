@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const RedisStore = require('connect-redis')(session);
-const redis = require('./redis')('user');
+const redis = require('./redis')['db_0'];
 const passport = require("passport");
 
 const app = express();

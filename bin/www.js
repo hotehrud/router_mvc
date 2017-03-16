@@ -3,10 +3,14 @@ const config = require('../app/config/environments');
 
 const syncDatabase = require('./sync-database');
 
-app.listen(config.port, () => {
-    console.log('Example app listening on port ' + config.port);
+require('../app/redis').init(function(err) {
+    if (err) throw err;
 
-    syncDatabase().then(() => {
-        console.log('Database sync');
+    app.listen(config.port, () => {
+        console.log('Example app listening on port ' + config.port);
+
+        syncDatabase().then(() => {
+            console.log('Database sync');
+        })
     })
-})
+});

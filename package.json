@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/hotehrud/router_mvc#readme",
   "dependencies": {
+    "async": "^2.1.5",
     "cheerio": "^0.22.0",
     "connect-redis": "^3.2.0",
     "cookie-parser": "^1.4.3",

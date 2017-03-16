@@ -1,5 +1,5 @@
 const models = require('../../models');
-const redis = require('../../redis')('keyword');
+const redis = require('../../redis')['db_1'];
 
 exports.index = (req, res) => {
     return res.status(200).json({message: "Hello Keyword"});
