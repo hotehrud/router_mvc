@@ -8,7 +8,7 @@ module.exports = (() => {
 
         const parse = {};
 
-        parse.setting = function (params, callback) {
+        parse.params = function (params) {
 
             let keyword = params['keyword'];
             let type = params['type'];
@@ -35,10 +35,9 @@ module.exports = (() => {
                 sort(options);
             }
 
-            if (typeof (callback) == 'function') {
-                callback(options);
+            return {
+                url: options['url']
             }
-
         }
 
         function next (pageno, options) {
@@ -51,9 +50,26 @@ module.exports = (() => {
         }
 
         return {
-            params: parse.setting
+            params: parse.params
         };
 
+    })()
+
+    mySearch.request = ( () => {
+        const request = {};
+
+        request.profile = function (options) {
+            return require('request').get(options, (error, response, body) => {
+                if (!error && response.statusCode == 200) {
+                    return body;
+                }
+            });
+
+        }
+
+        return {
+            profile: request.profile
+        }
     })()
 
     return mySearch;
