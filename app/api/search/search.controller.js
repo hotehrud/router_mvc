@@ -1,5 +1,7 @@
-const Search = require('../../models')['Search'];
-const Keyword = require('../../models')['Keyword'];
+const models = require('../../models');
+const Search = models['Search'];
+const Keyword = models['Keyword'];
+
 const search = require('./search');
 const redis = require('../../redis')['db_2'];
 
@@ -10,12 +12,10 @@ const daum = require('./thirdparty/daum');
 
 exports.index = (req, res) => {
     // ...
-    const result = [];
-
     let user = req.user;
 
     const params = {
-        keyword: req.params.keyword,
+        keyword: encodeURI(req.params.keyword),
         sns: req.query.sns,
         type: req.query.type,
         page: req.query.page,
@@ -24,26 +24,26 @@ exports.index = (req, res) => {
 
     redis.hgetall(user, (err, targets) => {
 
-        require('async').parallel([
-            function (callback) {
+        require('async').parallel({
+            naver: function (callback) {
 
                 if (targets['naver'] == 1) {
 
-                    request('http://localhost:3000/search/naver?' + "&keyword=" + params['keyword'] + '&type=' + params['type'] + '&page=' + params['page'] + '&sort=' + params['sort'], (error, response, body) => {
-                        console.log(body)
+                    request('http://localhost:3000/search/naver?' + "&keyword=" + params['keyword'] + '&type=' + params['type'] + '&page=' + params['page'] + '&sort=' + params['sort'], (error, response, result) => {
+
                         if (!error && response.statusCode == 200) {
-                            console.log(body);
+
                         }
-                        callback();
+                        callback(null, result);
                     });
 
                 } else {
-                    callback();
+                    callback(null, 'fail');
                 }
 
 
             },
-            function (callback) {
+            daum: function (callback) {
 
                 if (targets['daum'] == 1) {
 
@@ -51,17 +51,17 @@ exports.index = (req, res) => {
 
                 callback();
             },
-            function (callback) {
+            google: function (callback) {
 
                 if (targets['google'] == 1) {
 
                 }
 
                 callback();
-            },
-        ], () => {
-
-            return res.status(200).json({message: "Hello Search"});
+            }
+        }, (err, result) => {
+            //console.log(result.naver)
+            return res.status(200).end(JSON.parse(result.naver));
 
         });
 
@@ -96,7 +96,7 @@ exports.getNaver = (req, res) => {
                 request({url:options['url'], json: {api_url: options['api_url']}, method: 'POST'}, (error, response, body) => {
 
                     if (!error && response.statusCode == 200) {
-                        res.status(200).end(JSON.stringify(body));
+                        return res.status(200).end(JSON.stringify(body));
                     }
                 });
             }
@@ -105,19 +105,23 @@ exports.getNaver = (req, res) => {
 }
 
 exports.insertNaver = (req, res) => {
-    console.log("'insertNaver");
     let api_url = encodeURI(req.body.api_url);
-
     const options = {};
 
     options['url'] = api_url;
     options['headers'] = naver.getHeader();
 
+    // Get - Request Open API
     request(options, (error, response, body) => {
 
         if (!error && response.statusCode == 200) {
-            res.status(200).end(JSON.stringify(body));
+
+            console.log(naver.parse.custermizing(JSON.parse(body)));
+
+            return res.status(200).end(JSON.stringify(body));
+
         }
+
     });
 }
 

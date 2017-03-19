@@ -24,20 +24,40 @@ module.exports = (() => {
 
             options['keyword'] = keyword;
             options['type'] = type;
-            options['url'] = properties[type] + encodeURI(keyword);
+            options['url'] = properties[type] + keyword;
 
             // sub Options
-            if (typeof(page) != 'undefined') {
+            if (page != 'undefined') {
                 next(page, options);
             }
 
-            if (typeof(sort) != 'undefined') {
+            if (sort != 'undefined') {
                 sortRequest(options);
             }
 
             return {
                 url: options['url']
             }
+        }
+
+        parse.rename = function (obj) {
+            const items = obj['items'];
+            const property = properties['property'];
+
+            return items.map( (item) => {
+                return (() => {
+                    const renewal = {};
+
+                    Object.keys(item).forEach( (key) => {
+
+                        property.hasOwnProperty(key)
+                            ? renewal[property[key]] = item[key]
+                            : renewal[key] = item[key]
+                    })
+
+                    return renewal;
+                })()
+            })
         }
 
         function next (pageno, options) {
@@ -50,28 +70,65 @@ module.exports = (() => {
         }
 
         return {
-            params: parse.params
+            params: parse.params,
+            custermizing: parse.rename
         };
 
     })()
 
-    mySearch.request = ( () => {
-        const request = {};
-
-        request.profile = function (options) {
-            require('request').get(options, (error, response, body) => {
-                if (!error && response.statusCode == 200) {
-
-                }
-
-            });
-
-        }
-
-        return {
-            profile: request.profile
-        }
-    })()
+    //mySearch.parse = (() => {
+    //    const parse = {};
+    //
+    //    parse.extract = (obj, sns) => {
+    //        const items = obj.hasOwnProperty('channel') ? obj['channel'] : obj;
+    //        let name;
+    //
+    //        for (let v in items) {
+    //            if (typeof items[v] == 'object') {
+    //                name = v;
+    //                break;
+    //            }
+    //        }
+    //
+    //        return parse.rename.getter(items[name], sns);
+    //    }
+    //
+    //    parse.rename = (() => {
+    //
+    //        const company = {
+    //            naver : (items) => create(items, properties['naver']['property']),
+    //            daum : (items) => create(items, properties['daum']['property'])
+    //        }
+    //
+    //        const create = (items, propertys) => {
+    //
+    //            // Object Property name Customizing
+    //            return items.map( (item) => {
+    //                return (() => {
+    //                    const obj = {};
+    //
+    //                    Object.keys(item).forEach( (key) => {
+    //                        propertys.hasOwnProperty(key) ? obj[propertys[key]] = item[key] : obj[key] = item[key]
+    //                    })
+    //
+    //                    return obj;
+    //                })()
+    //            })
+    //
+    //        }
+    //
+    //        const get = (items, sns) => {
+    //            return company[sns].call(null, items);
+    //        }
+    //
+    //        return {
+    //            getter : get
+    //        }
+    //
+    //    })()
+    //
+    //    return parse;
+    //})();
 
     mySearch.getHeader = () => {
         return properties['headers'];
