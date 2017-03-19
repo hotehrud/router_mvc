@@ -123,6 +123,19 @@ const Search = sequelize.define('contents', {
         type: DataTypes.DATEONLY
     }
 }, {
+    getterMethods: {
+
+    },
+    setterMethods: {
+        setProviderData: function(data) {
+            this.search_title = data['title'] ? data['title'] : null;
+            this.search_link = data['link'] ? data['link'] : null;
+            this.search_desc = data['desc'] ? data['desc'] : null;
+            this.search_image = data['image'] ? data['image'] : null;
+            this.search_author = data['author'] ? data['author'] : null;
+            this.search_date = data['date'] ? data['date'] : null;
+        }
+    },
     indexes: [
         {
             index: true,

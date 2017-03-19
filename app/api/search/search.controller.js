@@ -6,6 +6,7 @@ const search = require('./search');
 const redis = require('../../redis')['db_2'];
 
 const request = require('request');
+const async = require('async');
 
 const naver = require('./thirdparty/naver');
 const daum = require('./thirdparty/daum');
@@ -24,7 +25,7 @@ exports.index = (req, res) => {
 
     redis.hgetall(user, (err, targets) => {
 
-        require('async').parallel({
+        async.parallel({
             naver: function (callback) {
 
                 if (targets['naver'] == 1) {
@@ -93,19 +94,28 @@ exports.getNaver = (req, res) => {
                 options['url'] = 'http://localhost:3000/search/naver';
                 options['api_url'] = naver.parse.params(params)['url'];
 
-                request({url:options['url'], json: {api_url: options['api_url']}, method: 'POST'}, (error, response, body) => {
+                request({url:options['url'], json: {api_url: options['api_url'],keyword: keyword, group: group}, method: 'POST'}, (error, response, body) => {
 
                     if (!error && response.statusCode == 200) {
-                        return res.status(200).end(JSON.stringify(body));
+                        return res.status(200).end(JSON.stringify(get()));
                     }
+
                 });
+            } else {
+                return res.status(200).end(JSON.stringify(get()));
             }
         })
 
+    function get() {
+        // DB access
+    }
 }
 
 exports.insertNaver = (req, res) => {
     let api_url = encodeURI(req.body.api_url);
+    let keyword = req.body.keyword;
+    let group = req.body.group;
+
     const options = {};
 
     options['url'] = api_url;
@@ -116,9 +126,25 @@ exports.insertNaver = (req, res) => {
 
         if (!error && response.statusCode == 200) {
 
-            console.log(naver.parse.custermizing(JSON.parse(body)));
+            // property rename - Return Value in Open API
+            const items = naver.parse.custermizing(JSON.parse(body));
 
-            return res.status(200).end(JSON.stringify(body));
+            // Insert DB
+            async.forEach(items, (item, callback) => {
+
+                models.Search.create({
+                    search_keyword: keyword,
+                    search_group: group,
+                    setProviderData: item
+                }).then( result => {
+                    callback();
+                }).catch( (err) => {
+                    if (err) throw err;
+                })
+
+            }, (err) => {
+                return res.status(200).end();
+            });
 
         }
 

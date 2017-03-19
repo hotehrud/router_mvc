@@ -53,6 +53,7 @@ module.exports = (() => {
                         property.hasOwnProperty(key)
                             ? renewal[property[key]] = item[key]
                             : renewal[key] = item[key]
+
                     })
 
                     return renewal;
