@@ -4,7 +4,7 @@ module.exports = (() => {
 
     const mySearch = {};
 
-    mySearch.parse = (function () {
+    mySearch.parse = ( () => {
 
         const parse = {};
 
@@ -24,15 +24,15 @@ module.exports = (() => {
 
             options['keyword'] = keyword;
             options['type'] = type;
-            options['url'] = properties[type] + encodeURI(keyword);
+            options['url'] = properties[type] + keyword;
 
             // sub Options
-            if (typeof(page) != 'undefined') {
+            if (page != 'undefined') {
                 next(page, options);
             }
 
-            if (typeof(sort) != 'undefined') {
-                sort(options);
+            if (sort != 'undefined') {
+                sortRequest(options);
             }
 
             return {
@@ -40,36 +40,41 @@ module.exports = (() => {
             }
         }
 
+        parse.rename = function (obj) {
+            const items = obj.channel['item'];
+            const property = properties['property'];
+
+            return items.map( (item) => {
+                return (() => {
+                    const renewal = {};
+
+                    Object.keys(item).forEach( (key) => {
+
+                        property.hasOwnProperty(key)
+                            ? renewal[property[key]] = item[key]
+                            : renewal[key] = item[key]
+
+                    })
+
+                    return renewal;
+                })()
+            })
+        }
+
         function next (pageno, options) {
             options['url'] += pageno < 4 ? '&pageno=' + pageno : '';
             options['url'] += '&start=' + (pageno * 10);
         }
 
-        function sort (options) {
+        function sortRequest (options) {
             options['url'] += '&sort=date';
         }
 
         return {
-            params: parse.params
+            params: parse.params,
+            custermizing: parse.rename
         };
 
-    })()
-
-    mySearch.request = ( () => {
-        const request = {};
-
-        request.profile = function (options) {
-            return require('request').get(options, (error, response, body) => {
-                if (!error && response.statusCode == 200) {
-                    return body;
-                }
-            });
-
-        }
-
-        return {
-            profile: request.profile
-        }
     })()
 
     return mySearch;

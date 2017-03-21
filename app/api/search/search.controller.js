@@ -35,7 +35,7 @@ exports.index = (req, res) => {
                         if (!error && response.statusCode == 200) {
 
                         }
-                        callback(null, result);
+                        callback(null, JSON.parse(result));
                     });
 
                 } else {
@@ -48,9 +48,17 @@ exports.index = (req, res) => {
 
                 if (targets['daum'] == 1) {
 
-                }
+                    request('http://localhost:3000/search/daum?' + "&keyword=" + params['keyword'] + '&type=' + params['type'] + '&page=' + params['page'] + '&sort=' + params['sort'], (error, response, result) => {
 
-                callback();
+                        if (!error && response.statusCode == 200) {
+
+                        }
+                        callback(null, JSON.parse(result));
+                    });
+
+                } else {
+                    callback(null, 'fail');
+                }
             },
             google: function (callback) {
 
@@ -60,9 +68,19 @@ exports.index = (req, res) => {
 
                 callback();
             }
-        }, (err, result) => {
-            //console.log(result.naver)
-            return res.status(200).json(JSON.parse(result.naver));
+        }, (err, datas) => {
+            const output = [];
+
+            for (let p in datas) {
+
+                if (typeof(datas[p]) == 'object') {
+                    output.push.apply(output, datas[p]);
+
+                }
+
+            }
+
+            return res.status(200).json(output);
 
         });
 
@@ -209,7 +227,6 @@ exports.insertDaum = (req, res) => {
     const options = {};
 
     options['url'] = api_url;
-    options['headers'] = naver.getHeader();
 
     // Get - Request Open API
     request(options, (error, response, body) => {
@@ -217,7 +234,7 @@ exports.insertDaum = (req, res) => {
         if (!error && response.statusCode == 200) {
 
             // property rename - Return Value in Open API
-            const items = naver.parse.custermizing(JSON.parse(body));
+            const items = daum.parse.custermizing(JSON.parse(body));
 
             // Insert DB
             async.forEach(items, (item, callback) => {
@@ -239,7 +256,7 @@ exports.insertDaum = (req, res) => {
                 // keyword insert
                 request({url:'http://localhost:3000/keyword', json: {keyword: keyword, group: group, provider: 'daum'}, method: 'POST'}, (error, response) => {
                     if (!error && response.statusCode == 204) {
-                        // .....
+                        // Update scheduled (return values of db)
                         console.log('keyword insert suceess');
                     }
                 });
@@ -260,6 +277,7 @@ exports.insertGoogle = (req, res) => {
 
 }
 
+// issue. Update scheduled (return values of db)
 function get(keyword, group, callback, res) {
     // DB access
     Search.findAll({

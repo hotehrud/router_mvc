@@ -56,7 +56,7 @@ exports.create = (req, res) => {
     let group = req.body.group;
     let provider = req.body.provider;
 
-    Keyword.create({
+    Keyword.upsert({
         keyword_name: keyword,
         keyword_group: group,
         keyword_provider: provider
