@@ -27,7 +27,7 @@ module.exports = (() => {
             options['url'] = properties[type] + keyword;
 
             // sub Options
-            if (page != 'undefined') {
+            if (page > 0) {
                 next(page, options);
             }
 

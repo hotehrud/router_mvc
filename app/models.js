@@ -118,6 +118,7 @@ const Search = sequelize.define('contents', {
         type: Sequelize.STRING(20),
         allowNull: false
     },
+    search_provider: Sequelize.STRING(20),
     search_group: Sequelize.STRING(20),
     search_title: Sequelize.STRING(50),
     search_link: Sequelize.STRING(50),
@@ -154,6 +155,17 @@ const Search = sequelize.define('contents', {
             this.search_image = data['image'] ? data['image'] : null;
             this.search_author = data['author'] ? data['author'] : null;
             this.search_date = data['date'] ? data['date'] : null;
+        },
+        setProvider: function(provider) {
+            this.search_provider = provider;
+
+            if (provider == 'daum') {
+                this.search_daum = 'Y';
+            } else if (provider == 'naver') {
+                this.search_naver = 'Y';
+            } else if (provider == 'google') {
+                this.search_google = 'Y';
+            }
         }
     },
     indexes: [
@@ -163,7 +175,7 @@ const Search = sequelize.define('contents', {
         },
         {
             index: true,
-            fields: ['search_keyword']
+            fields: ['search_keyword', 'search_group', 'search_provider']
         }
     ]
 

@@ -1,6 +1,5 @@
 const models = require('../../models');
 const Search = models['Search'];
-const Keyword = models['Keyword'];
 
 const search = require('./search');
 const redis = require('../../redis')['db_2'];
@@ -94,21 +93,24 @@ exports.getNaver = (req, res) => {
     let group = req.query.type;
 
     // Update scheduled (use count)
-    Keyword.findOne({
+    Search.count({
         where: {
-            keyword_name: keyword,
-            keyword_group: group
+            search_keyword: keyword,
+            search_group: group,
+            search_provider: 'naver'
         }
     })
-        .then(instance => {
-            if (!instance) {
+        .then(cnt => {
+            const params = {
+                keyword: keyword,
+                type: group,
+                page: req.query.page == 'undefined' ? 0 : req.query.page,
+                sort: req.query.sort,
+                provider: 'naver'
+            }
+
+            if (!cnt || params['page'] * 10 >= cnt) {
                 const options = {};
-                const params = {
-                    keyword: keyword,
-                    type: group,
-                    page: req.query.page,
-                    sort: req.query.sort
-                }
 
                 options['url'] = 'http://localhost:3000/search/naver';
                 options['api_url'] = naver.parse.params(params)['url'];
@@ -117,12 +119,12 @@ exports.getNaver = (req, res) => {
                 request({url:options['url'], json: {api_url: options['api_url'],keyword: keyword, group: group}, method: 'POST'}, (error, response) => {
 
                     if (!error && response.statusCode == 204) {
-                        return get(keyword, group, parse, res);
+                        return get(params, parse, res);
                     }
 
                 });
             } else {
-                return get(keyword, group, parse, res);
+                return get(params, parse, res);
             }
         })
 
@@ -152,7 +154,7 @@ exports.insertNaver = (req, res) => {
                 Search.upsert({
                     search_keyword: keyword,
                     search_group: group,
-                    search_naver: 'Y',
+                    setProvider: 'naver',
                     setProviderData: item
                 }).then( result => {
                     callback();
@@ -185,21 +187,24 @@ exports.getDaum = (req, res) => {
     let group = req.query.type;
 
     // Update scheduled (use count)
-    Keyword.findOne({
+    Search.count({
         where: {
-            keyword_name: keyword,
-            keyword_group: group
+            search_keyword: keyword,
+            search_group: group,
+            search_provider: 'daum'
         }
     })
-        .then(instance => {
-            if (!instance) {
+        .then(cnt => {
+            const params = {
+                keyword: keyword,
+                type: group,
+                page: req.query.page == 'undefined' ? 0 : req.query.page,
+                sort: req.query.sort,
+                provider: 'daum'
+            }
+
+            if (!cnt || params['page'] * 10 >= cnt) {
                 const options = {};
-                const params = {
-                    keyword: keyword,
-                    type: group,
-                    page: req.query.page,
-                    sort: req.query.sort
-                }
 
                 options['url'] = 'http://localhost:3000/search/daum';
                 options['api_url'] = daum.parse.params(params)['url'];
@@ -208,12 +213,12 @@ exports.getDaum = (req, res) => {
                 request({url:options['url'], json: {api_url: options['api_url'],keyword: keyword, group: group}, method: 'POST'}, (error, response) => {
 
                     if (!error && response.statusCode == 204) {
-                        return get(keyword, group, parse, res);
+                        return get(params, parse, res);
                     }
 
                 });
             } else {
-                return get(keyword, group, parse, res);
+                return get(params, parse, res);
             }
         })
 
@@ -242,9 +247,9 @@ exports.insertDaum = (req, res) => {
                 Search.upsert({
                     search_keyword: keyword,
                     search_group: group,
-                    setProviderData: item,
-                    search_daum: 'Y'
-                }).then( result => {
+                    setProvider: 'daum',
+                    setProviderData: item
+                }).then( datas => {
                     callback();
                 }).catch( (err) => {
                     if (err) throw err;
@@ -256,7 +261,6 @@ exports.insertDaum = (req, res) => {
                 // keyword insert
                 request({url:'http://localhost:3000/keyword', json: {keyword: keyword, group: group, provider: 'daum'}, method: 'POST'}, (error, response) => {
                     if (!error && response.statusCode == 204) {
-                        // Update scheduled (return values of db)
                         console.log('keyword insert suceess');
                     }
                 });
@@ -277,14 +281,21 @@ exports.insertGoogle = (req, res) => {
 
 }
 
-// issue. Update scheduled (return values of db)
-function get(keyword, group, callback, res) {
+function get(datas, callback, res) {
+    let keyword = datas['keyword'];
+    let group = datas['type'];
+    let provider = datas['provider'];
+    let pageno = datas['page'] == 'undefined' ? 0 : datas['page'] * 10;
+
     // DB access
     Search.findAll({
         where: {
             search_keyword: keyword,
-            search_group: group
-        }
+            search_group: group,
+            search_provider: provider
+        },
+        offset: pageno,
+        limit: 10
     })
         .then(result => {
             callback(result, res);
@@ -299,6 +310,10 @@ function parse(datas, res) {
     const result = datas.map((data) => {
         return data['dataValues'];
     })
+
+    if (typeof(res) == 'undefined') {
+        return result;
+    }
 
     res.status(200).end(JSON.stringify(result));
 }
