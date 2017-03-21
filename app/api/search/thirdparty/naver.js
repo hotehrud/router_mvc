@@ -77,60 +77,6 @@ module.exports = (() => {
 
     })()
 
-    //mySearch.parse = (() => {
-    //    const parse = {};
-    //
-    //    parse.extract = (obj, sns) => {
-    //        const items = obj.hasOwnProperty('channel') ? obj['channel'] : obj;
-    //        let name;
-    //
-    //        for (let v in items) {
-    //            if (typeof items[v] == 'object') {
-    //                name = v;
-    //                break;
-    //            }
-    //        }
-    //
-    //        return parse.rename.getter(items[name], sns);
-    //    }
-    //
-    //    parse.rename = (() => {
-    //
-    //        const company = {
-    //            naver : (items) => create(items, properties['naver']['property']),
-    //            daum : (items) => create(items, properties['daum']['property'])
-    //        }
-    //
-    //        const create = (items, propertys) => {
-    //
-    //            // Object Property name Customizing
-    //            return items.map( (item) => {
-    //                return (() => {
-    //                    const obj = {};
-    //
-    //                    Object.keys(item).forEach( (key) => {
-    //                        propertys.hasOwnProperty(key) ? obj[propertys[key]] = item[key] : obj[key] = item[key]
-    //                    })
-    //
-    //                    return obj;
-    //                })()
-    //            })
-    //
-    //        }
-    //
-    //        const get = (items, sns) => {
-    //            return company[sns].call(null, items);
-    //        }
-    //
-    //        return {
-    //            getter : get
-    //        }
-    //
-    //    })()
-    //
-    //    return parse;
-    //})();
-
     mySearch.getHeader = () => {
         return properties['headers'];
     }

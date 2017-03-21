@@ -1,6 +1,8 @@
 const models = require('../../models');
 const redis = require('../../redis')['db_1'];
 
+const Keyword = models['Keyword'];
+
 exports.index = (req, res) => {
     return res.status(200).json({message: "Hello Keyword"});
 }
@@ -8,7 +10,7 @@ exports.index = (req, res) => {
 exports.show = (req, res) => {
     let keyword = req.params.keyword;
 
-    models.Keyword.findOne({
+    Keyword.findOne({
         where: {
             keyword_name: keyword
         }
@@ -23,7 +25,7 @@ exports.show = (req, res) => {
 exports.list = (req, res) => {
     let pageno = req.query.pageno ? req.query.pageno * 10 : 0;
 
-    models.Keyword.findAll({
+    Keyword.findAll({
         offset: pageno,
         limit: 10
     })
@@ -37,7 +39,7 @@ exports.list = (req, res) => {
 exports.rank = (req, res) => {
     let pageno = req.query.pageno ? req.query.pageno * 10 : 0;
 
-    models.Keyword.findAll({
+    Keyword.findAll({
         order: 'keyword_count DESC',
         offset: pageno,
         limit: 10
@@ -50,6 +52,18 @@ exports.rank = (req, res) => {
 }
 
 exports.create = (req, res) => {
+    let keyword = req.body.keyword;
+    let group = req.body.group;
+
+    Keyword.create({
+        keyword_name: keyword,
+        keyword_group: group
+    })
+
+    return res.status(204).end();
+}
+
+exports.count = (req, res) => {
     let keyword = req.body.keyword_name;
     let group = req.body.keyword_group.split(',');
 

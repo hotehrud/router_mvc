@@ -62,7 +62,7 @@ exports.index = (req, res) => {
             }
         }, (err, result) => {
             //console.log(result.naver)
-            return res.status(200).end(JSON.parse(result.naver));
+            return res.status(200).json(JSON.parse(result.naver));
 
         });
 
@@ -75,6 +75,7 @@ exports.getNaver = (req, res) => {
     let keyword = req.query.keyword;
     let group = req.query.type;
 
+    // Update scheduled
     Keyword.findOne({
         where: {
             keyword_name: keyword,
@@ -94,10 +95,11 @@ exports.getNaver = (req, res) => {
                 options['url'] = 'http://localhost:3000/search/naver';
                 options['api_url'] = naver.parse.params(params)['url'];
 
-                request({url:options['url'], json: {api_url: options['api_url'],keyword: keyword, group: group}, method: 'POST'}, (error, response, body) => {
+                // Insert search API, new contents about keyword
+                request({url:options['url'], json: {api_url: options['api_url'],keyword: keyword, group: group}, method: 'POST'}, (error, response) => {
 
-                    if (!error && response.statusCode == 200) {
-                        return res.status(200).end(JSON.stringify(get()));
+                    if (!error && response.statusCode == 204) {
+                        return get(parse);
                     }
 
                 });
@@ -106,9 +108,31 @@ exports.getNaver = (req, res) => {
             }
         })
 
-    function get() {
+    function get(callback) {
         // DB access
+        Search.findAll({
+            where: {
+                search_keyword: keyword,
+                search_group: group
+            }
+        })
+            .then(result => {
+                callback(result);
+            })
+            .catch(err => {
+                if (err) throw err;
+            })
     }
+
+    function parse(datas) {
+        // return values of database convert for json type
+        const result = datas.map((data) => {
+            return data['dataValues'];
+        })
+
+        res.status(200).end(JSON.stringify(result));
+    }
+
 }
 
 exports.insertNaver = (req, res) => {
@@ -132,7 +156,7 @@ exports.insertNaver = (req, res) => {
             // Insert DB
             async.forEach(items, (item, callback) => {
 
-                models.Search.create({
+                Search.create({
                     search_keyword: keyword,
                     search_group: group,
                     setProviderData: item
@@ -143,7 +167,17 @@ exports.insertNaver = (req, res) => {
                 })
 
             }, (err) => {
-                return res.status(200).end();
+                if (err) throw err;
+
+                // keyword insert
+                request({url:'http://localhost:3000/keyword', json: {keyword: keyword, group: group}, method: 'POST'}, (error, response) => {
+                    if (!error && response.statusCode == 204) {
+                        // .....
+                        console.log('keyword insert suceess');
+                    }
+                });
+
+                return res.status(204).end();
             });
 
         }

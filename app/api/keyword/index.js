@@ -14,7 +14,10 @@ router.get('/list', controller.list);
 // Rank Keyword
 router.get('/rank', controller.rank);
 
-// Keyword is store in redis. The reason is the number of keyword to check in real-time.
+// Create Keyword
 router.post('/', controller.create);
+
+// Keyword is store in redis. The reason is the number of keyword to check in real-time.
+router.post('/redis', controller.count);
 
 module.exports = router;

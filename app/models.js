@@ -83,7 +83,8 @@ const Keyword = sequelize.define('keywords', {
     },
     keyword_count: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 1
     },
     keyword_group: {
         type: Sequelize.STRING(20),
