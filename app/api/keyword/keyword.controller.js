@@ -54,10 +54,12 @@ exports.rank = (req, res) => {
 exports.create = (req, res) => {
     let keyword = req.body.keyword;
     let group = req.body.group;
+    let provider = req.body.provider;
 
     Keyword.create({
         keyword_name: keyword,
-        keyword_group: group
+        keyword_group: group,
+        keyword_provider: provider
     })
 
     return res.status(204).end();

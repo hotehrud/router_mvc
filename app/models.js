@@ -89,6 +89,10 @@ const Keyword = sequelize.define('keywords', {
     keyword_group: {
         type: Sequelize.STRING(20),
         allowNull: false
+    },
+    keyword_provider: {
+        type: Sequelize.STRING(20),
+        allowNull: false
     }
 }, {
     indexes: [
@@ -98,7 +102,7 @@ const Keyword = sequelize.define('keywords', {
         },
         {
             index: true,
-            fields: ['keyword_count']
+            fields: ['keyword_count', 'keyword_provider']
         }
     ]
 
@@ -122,6 +126,21 @@ const Search = sequelize.define('contents', {
     search_author: Sequelize.STRING(50),
     search_date: {
         type: DataTypes.DATEONLY
+    },
+    search_naver: {
+        type: Sequelize.ENUM,
+        values: [ 'Y', 'N' ],
+        defaultValue: 'N'
+    },
+    search_daum: {
+        type: Sequelize.ENUM,
+        values: [ 'Y', 'N' ],
+        defaultValue: 'N'
+    },
+    search_google: {
+        type: Sequelize.ENUM,
+        values: [ 'Y', 'N' ],
+        defaultValue: 'N'
     }
 }, {
     getterMethods: {
@@ -138,6 +157,10 @@ const Search = sequelize.define('contents', {
         }
     },
     indexes: [
+        {
+            unique: true,
+            fields: ['search_link']
+        },
         {
             index: true,
             fields: ['search_keyword']
