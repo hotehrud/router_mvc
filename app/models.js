@@ -98,11 +98,11 @@ const Keyword = sequelize.define('keywords', {
     indexes: [
         {
             unique: true,
-            fields: ['keyword_name', 'keyword_group']
+            fields: ['keyword_name', 'keyword_group', 'keyword_provider']
         },
         {
             index: true,
-            fields: ['keyword_count', 'keyword_provider']
+            fields: ['keyword_count']
         }
     ]
 

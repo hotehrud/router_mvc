@@ -166,7 +166,7 @@ exports.insertNaver = (req, res) => {
                 if (err) throw err;
 
                 // keyword insert
-                request({url:'http://localhost:3000/keyword', json: {keyword: keyword, group: group, provider: 'naver'}, method: 'POST'}, (error, response) => {
+                request({url:'http://localhost:3000/keyword/create', json: {keyword: keyword, group: group, provider: 'naver'}, method: 'POST'}, (error, response) => {
                     if (!error && response.statusCode == 204) {
                         // .....
                         console.log('keyword insert suceess');
@@ -186,7 +186,6 @@ exports.getDaum = (req, res) => {
     let keyword = req.query.keyword;
     let group = req.query.type;
 
-    // Update scheduled (use count)
     Search.count({
         where: {
             search_keyword: keyword,
@@ -259,7 +258,7 @@ exports.insertDaum = (req, res) => {
                 if (err) throw err;
 
                 // keyword insert
-                request({url:'http://localhost:3000/keyword', json: {keyword: keyword, group: group, provider: 'daum'}, method: 'POST'}, (error, response) => {
+                request({url:'http://localhost:3000/keyword/create', json: {keyword: keyword, group: group, provider: 'daum'}, method: 'POST'}, (error, response) => {
                     if (!error && response.statusCode == 204) {
                         console.log('keyword insert suceess');
                     }

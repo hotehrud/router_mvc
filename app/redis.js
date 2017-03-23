@@ -3,37 +3,35 @@ const config = require('./config/environments')['redis'];
 
 module.exports = ( () => {
     const redisClient = {
-        db_0: redis.createClient(config.port, config.host),
-        db_1: redis.createClient(config.port, config.host),
-        db_2: redis.createClient(config.port, config.host),
+        db_0: createClient(),
+        db_1: createClient(),
+        db_2: createClient(),
         init: function(next) {
-            advanced();
-
             const select = redis.RedisClient.prototype.select;
+
             require('async').parallel([
                 select.bind(redisClient.db_0, 0),
                 select.bind(redisClient.db_1, 1),
                 select.bind(redisClient.db_2, 2)
             ], next);
+
         }
     }
 
-    function advanced() {
-        const databases = ['db_0', 'db_1', 'db_2'];
+    function createClient() {
+        const client = redis.createClient(config.port, config.host);
 
-        for(let i in databases) {
-            redisClient[databases[i]].on('error', (err) => {
-                if (err) throw err;
+        client.auth(config.password, (err, reply) => {
+            if (err) throw err;
+        });
 
-                console.log(i + ' on');
-            })
+        client.on('error', (err, reply) => {
+            if (err) throw err;
 
-            redisClient[databases[i]].auth(config.password, (err) => {
-                if (err) throw err;
+            console.log("Error " + reply);
+        })
 
-                console.log('auth success');
-            })
-        }
+        return client;
     }
 
     return redisClient;

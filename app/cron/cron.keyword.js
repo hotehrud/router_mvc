@@ -22,7 +22,8 @@ const job = new CronJob({
                         attributes: ['keyword_count'],
                         where: {
                             keyword_name: arrayObject[i]['name'],
-                            keyword_group: arrayObject[i]['group']
+                            keyword_group: arrayObject[i]['group'],
+                            keyword_provider: arrayObject[i]['provider']
                         }
                     }).then(value => {
 
@@ -34,9 +35,10 @@ const job = new CronJob({
                         keyword.upsert({
                             keyword_name: arrayObject[i]['name'],
                             keyword_group: arrayObject[i]['group'],
+                            keyword_provider: arrayObject[i]['provider'],
                             keyword_count: arrayObject[i]['count']
-                        }).then( (rr) => {
-                            //console.log(rr)
+                        }).then( () => {
+                            // ...
                         }).catch(function (err) {
                             // handle error;
                             if (err) throw err;
@@ -62,6 +64,7 @@ const job = new CronJob({
                         const obj = {
                             name: key[0],
                             group: key[1],
+                            provider: key[2],
                             count: Number(value)
                         }
 

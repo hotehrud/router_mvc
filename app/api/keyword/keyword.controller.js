@@ -51,33 +51,24 @@ exports.rank = (req, res) => {
         })
 }
 
-exports.create = (req, res) => {
+exports.createOrIncrease = (req, res) => {
     let keyword = req.body.keyword;
     let group = req.body.group;
     let provider = req.body.provider;
 
-    Keyword.upsert({
-        keyword_name: keyword,
-        keyword_group: group,
-        keyword_provider: provider
+    // redis key => keyword + group + provider
+    let key = keyword + '&' + group + '&' + provider;
+
+    redis.hgetall(key, (err, reply) => {
+        if (err) throw err;
+
+        if (reply) {
+            redis.hmset(key, {count:++reply.count, provider:provider});
+        } else {
+            redis.hmset(key, {count:1, provider:provider});
+        }
+
     })
-
-    return res.status(204).end();
-}
-
-exports.count = (req, res) => {
-    let keyword = req.body.keyword_name;
-    let group = req.body.keyword_group.split(',');
-
-    for (let i in group) {
-        let key = keyword + '&' + group[i];
-
-        redis.get(key, (err, reply) => {
-            if (err) throw err;
-
-            reply ? redis.set(key, ++reply) : redis.set(key, 1);
-        })
-    }
 
     return res.status(204).end();
 }
