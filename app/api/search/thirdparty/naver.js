@@ -27,11 +27,11 @@ module.exports = (() => {
             options['url'] = properties[type] + keyword;
 
             // sub Options
-            if (page > 0) {
+            if (page > 1) {
                 next(page, options);
             }
 
-            if (sort != 'undefined') {
+            if (sort == 'date') {
                 sortRequest(options);
             }
 
@@ -62,8 +62,8 @@ module.exports = (() => {
         }
 
         function next (pageno, options) {
-            options['url'] += pageno < 4 ? '&pageno=' + pageno : '';
-            options['url'] += '&start=' + (pageno * 10);
+            // 1 ~ 1000
+            options['url'] += '&start=' + (pageno * 10 + 1);
         }
 
         function sortRequest (options) {

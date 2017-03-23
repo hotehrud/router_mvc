@@ -208,6 +208,11 @@ exports.getDaum = (req, res) => {
                 options['url'] = 'http://localhost:3000/search/daum';
                 options['api_url'] = daum.parse.params(params)['url'];
 
+                // Daum API pageno excess
+                if (options['api_url'] == 'invalid') {
+                    return res.status(400).end('Invalid Argument');
+                }
+
                 // Insert search API, new contents about keyword
                 request({url:options['url'], json: {api_url: options['api_url'],keyword: keyword, group: group}, method: 'POST'}, (error, response) => {
 
@@ -284,7 +289,9 @@ function get(datas, callback, res) {
     let keyword = datas['keyword'];
     let group = datas['type'];
     let provider = datas['provider'];
-    let pageno = datas['page'] == 'undefined' ? 0 : datas['page'] * 10;
+    let pageno = (typeof(datas['page']) == 'undefined' || datas['page'] == 0 || datas['page'] == 1)
+        ? 0
+        : (datas['page'] - 1) * 10;
 
     // DB access
     Search.findAll({
@@ -314,5 +321,9 @@ function parse(datas, res) {
         return result;
     }
 
-    res.status(200).end(JSON.stringify(result));
+    if (result.length == 0) {
+        return res.status(200).json({msg: 'empty'});
+    }
+
+    return res.status(200).end(JSON.stringify(result));
 }
