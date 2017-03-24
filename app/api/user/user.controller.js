@@ -1,4 +1,5 @@
 const User = require('../../models')['User'];
+const request = require('request');
 
 exports.index = (req, res) => {
     // ...
@@ -85,8 +86,19 @@ exports.update = (req, res) => {
 
 }
 
-exports.callback = (req, res) => {
-    req.user ? res.status(200).json({msg: req.user}) : res.status(500).json({msg: "Interal Error"});
+exports.authCallback = (req, res) => {
+
+    // For provider initial create
+    request({url:'http://localhost:3000/check/create', json: {user: req.user}, method: 'POST'}, (error, response) => {
+
+        if (!error && response.statusCode == 200) {
+            return res.status(200).json({msg: req.user});
+        } else {
+            return res.status(500).json({msg: "Interal Error"});
+        }
+
+    });
+
 }
 
 exports.saveOAuthUserProfile = (profile, done) => {

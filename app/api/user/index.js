@@ -15,10 +15,10 @@ router.post('/', controller.create);
 
 router.put('/:id', controller.update);
 
-router.get('/auth/naver/callback', passport.authenticate('naver'), controller.callback);
+router.get('/auth/naver/callback', passport.authenticate('naver'), controller.authCallback);
 
-router.get('/auth/daum/callback', passport.authenticate('daum'), controller.callback);
+router.get('/auth/daum/callback', passport.authenticate('daum'), controller.authCallback);
 
-router.get('/auth/kakao/callback', passport.authenticate('kakao'), controller.callback);
+router.get('/auth/kakao/callback', passport.authenticate('kakao'), controller.authCallback);
 
 module.exports = router;

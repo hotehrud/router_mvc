@@ -1,7 +1,6 @@
 const models = require('../../models');
 const Search = models['Search'];
 
-const search = require('./search');
 const redis = require('../../redis')['db_2'];
 
 const request = require('request');
@@ -20,6 +19,10 @@ exports.index = (req, res) => {
         type: req.query.type,
         page: req.query.page,
         sort: req.query.sort
+    }
+
+    if (!user) {
+        return res.status(401).json({msg: 'You need login'});
     }
 
     redis.hgetall(user, (err, targets) => {

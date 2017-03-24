@@ -1,7 +1,7 @@
 const redis = require('../../redis')['db_2'];
 
 exports.init = (req, res) => {
-    let user = req.user;
+    let user = req.body.user;
 
     if (!user) {
         return res.status(401).json({msg: 'You need login'});
@@ -15,7 +15,7 @@ exports.init = (req, res) => {
 
     redis.hmset(user, targets);
 
-    return res.status(200).json({'msg': 'success'});
+    return res.status(200).json({'msg': 'store in redis, success'});
 }
 
 exports.search = (req, res) => {

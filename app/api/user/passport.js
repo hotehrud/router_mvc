@@ -1,13 +1,17 @@
-const passport = require("passport");
+const passport = require('passport');
+const request = require('request');
+
+const redis = require('../../redis')['db_2'];
 
 passport.serializeUser(function (id, done) {
-    console.log("serializeUser")
-    console.log(id);
+    console.log("serializeUser" + id);
+
     done(null, id);
 });
 passport.deserializeUser(function (user, done) {
     console.log("deserializeUser")
-    return done(null, user);
+
+    done(null, user);
 });
 
 require('./strategies/naver.js')(passport);
