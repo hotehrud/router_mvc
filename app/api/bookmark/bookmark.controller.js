@@ -7,7 +7,7 @@ exports.index = (req, res) => {
 exports.show = (req, res) => {
     let id = req.params.id;
     let user = req.user;
-
+console.log(req)
     if (!user) {
         return res.status(401).json({msg: 'You need login'});
     }
@@ -90,7 +90,7 @@ exports.create = (req, res) => {
                     })
 
             } else {
-                return res.status(404).json({msg: 'not page found'});
+                return res.status(400).json({msg: 'duplicate'});
             }
         })
 }
