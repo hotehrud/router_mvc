@@ -44,18 +44,19 @@ request({
 
     request({
         'User-Agent': 'Mozilla/5.0',
-        uri: "https://www.google.com/search?gws_rd=ssl&site=&source=hp&q=google&oq=google",
+        uri: "https://www.google.com/search?gws_rd=ssl&site=&source=hp&q=google&oq=google&tbm=nws",
         encoding: null
     }, (error, response, body) => {
         var data = iconv.convert(body).toString();
 
         const $ = cheerio.load(data);
 
-        $("li").each(function() {
-            var link = $(this);
+        $("#center_col .g").each(function() {
+            var link = $(this).find('h3[class="r"]');
             var text = link.text();
 
-            console.log(text);
+            console.log(link.children('a').attr('href'))
+            console.log(text + '\n');
         });
     });
 });

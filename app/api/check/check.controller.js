@@ -13,7 +13,7 @@ exports.init = (req, res) => {
         google: 1
     };
 
-    redis.hmset(user, targets);
+    redis.hmset(user, targets); 
 
     return res.status(200).json({'msg': 'store in redis, success'});
 }

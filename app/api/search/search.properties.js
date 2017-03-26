@@ -29,6 +29,13 @@ const apiProperties = {
         searchCafe: "https://apis.daum.net/search/cafe?apikey=a5b0eef3c46e86443e3b73624f11488a&output=json&q=",
         property: {title: 'title', link: 'link', description: 'desc', author: 'author', pubDate: 'date'}
 
+    },
+    google: {
+        searchTotal: 'https://www.google.com/search?gws_rd=ssl&site=&source=hp&q=',
+        searchNews: 'https://www.google.com/search?gws_rd=ssl&site=&source=hp&tbm=nws&q=',
+        searchVclip: 'https://www.google.com/search?gws_rd=ssl&site=&source=hp&tbm=nws&q=',
+        searchImage: 'https://www.google.com/search?gws_rd=ssl&site=&source=hp&tbm=isch&q=',
+        searchBook: 'https://www.google.com/search?gws_rd=ssl&site=&source=hp&tbm=bks&q='
     }
 }
 
