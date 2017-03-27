@@ -1,4 +1,5 @@
 const redis = require('../../redis')['db_2'];
+const check = require('./check');
 
 exports.init = (req, res) => {
     let user = req.body.user;
@@ -7,39 +8,35 @@ exports.init = (req, res) => {
         return res.status(401).json({msg: 'You need login'});
     }
 
-    const targets = {
-        naver: 1,
-        daum: 1,
-        google: 1
-    };
+    const targets = check.init();
 
-    redis.hmset(user, targets); 
+    redis.set(user, targets);
 
     return res.status(200).json({'msg': 'store in redis, success'});
 }
 
-exports.search = (req, res) => {
+exports.findAndUpdate = (req, res) => {
     let user = req.user;
-    let sns = req.params.sns;
+    let provider = req.params.provider;
+    let type = req.query.type;
+
+    if (!type) {
+        return res.status(400).json({msg: 'Invalid parameter'});
+    }
 
     if (!user) {
         return res.status(401).json({msg: 'You need login'});
     }
 
-    redis.exists(user, (err, reply) => {
+    redis.get(user, (err, reply) => {
+        const obj = JSON.parse(reply);
 
-        if (reply) {
+        obj[provider][type] = obj[provider][type] == 1 ? 0 : 1;
 
-            redis.hgetall(user, (err, obj) => {
-                if (err) throw err;
+        redis.set(user, JSON.stringify(obj), (err, reply) => {
+            if (err) throw err;
+        });
 
-                obj[sns] = obj[sns] == 1 ? 0 : 1;
-
-                redis.hmset(user, obj, (err, reply) => {
-                    if (err) throw err;
-                });
-            });
-        }
     })
 
     return res.status(200).json({'msg': 'success'});

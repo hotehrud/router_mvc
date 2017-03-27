@@ -5,6 +5,6 @@ const controller = require('./check.controller');
 router.post('/create', controller.init);
 
 // Store, target in redis for a search
-router.get('/search/:sns', controller.search);
+router.get('/search/:provider', controller.findAndUpdate);
 
 module.exports = router;
