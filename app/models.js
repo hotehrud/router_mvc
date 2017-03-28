@@ -121,7 +121,7 @@ const Search = sequelize.define('contents', {
     search_provider: Sequelize.STRING(20),
     search_group: Sequelize.STRING(20),
     search_title: Sequelize.STRING(50),
-    search_link: Sequelize.STRING(50),
+    search_link: Sequelize.STRING(255),
     search_desc: Sequelize.STRING(255),
     search_image: Sequelize.STRING(50),
     search_author: Sequelize.STRING(50),

@@ -31,13 +31,18 @@ exports.findAndUpdate = (req, res) => {
     redis.get(user, (err, reply) => {
         const obj = JSON.parse(reply);
 
+        if (typeof(obj[provider][type]) == 'undefined') {
+            return res.status(400).json({'msg': 'invalid parameter about ' + type});
+        }
+
         obj[provider][type] = obj[provider][type] == 1 ? 0 : 1;
 
         redis.set(user, JSON.stringify(obj), (err, reply) => {
             if (err) throw err;
         });
 
+        return res.status(204).end();
+
     })
 
-    return res.status(200).json({'msg': 'success'});
 }

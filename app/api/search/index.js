@@ -3,7 +3,7 @@ const router = require('express').Router();
 const controller = require('./search.controller');
 
 // Through redis, select the target
-router.get('/check/:keyword', controller.index);
+router.get('/show/:keyword', controller.init);
 
 // naver search contents get
 router.get('/naver', controller.getNaver);

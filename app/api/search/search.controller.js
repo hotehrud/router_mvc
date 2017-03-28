@@ -9,14 +9,13 @@ const async = require('async');
 const naver = require('./thirdparty/naver');
 const daum = require('./thirdparty/daum');
 
-exports.index = (req, res) => {
+exports.init = (req, res) => {
     // ...
     let user = req.user;
 
     const params = {
         keyword: encodeURI(req.params.keyword),
         sns: req.query.sns,
-        type: req.query.type,
         page: req.query.page,
         sort: req.query.sort
     }
@@ -25,58 +24,79 @@ exports.index = (req, res) => {
         return res.status(401).json({msg: 'You need login'});
     }
 
-    redis.hgetall(user, (err, targets) => {
+    redis.get(user, (err, reply) => {
+        const obj = JSON.parse(reply);
+        const naver = obj['naver'];
+        const daum = obj['daum'];
+        const google = obj['google'];
 
+        const resultArray = [];
+
+        // Use parallel + forEach of Async-process, For inner property of provider
         async.parallel({
-            naver: function (callback) {
+            naver: function (done) {
+                async.forEach(Object.keys(naver), function (key, callback){
+                    console.log(key)
+                    let value = naver[key];
 
-                if (targets['naver'] == 1) {
+                    if (value == 1) {
+                        console.log('naver ' + key + ' ' + value)
+                        request('http://localhost:3000/search/naver?' + "&keyword=" + params['keyword'] + '&type=' + key + '&page=' + params['page'] + '&sort=' + params['sort'], (error, response, result) => {
 
-                    request('http://localhost:3000/search/naver?' + "&keyword=" + params['keyword'] + '&type=' + params['type'] + '&page=' + params['page'] + '&sort=' + params['sort'], (error, response, result) => {
+                            resultArray.push(JSON.parse(result));
+                            callback();
 
-                        if (!error && response.statusCode == 200) {
+                        });
 
-                        }
-                        callback(null, JSON.parse(result));
-                    });
+                    } else {
+                        callback(null, 'fail');
+                    }
 
-                } else {
-                    callback(null, 'fail');
-                }
-
-
+                }, function (err) {
+                    done();
+                });
             },
-            daum: function (callback) {
+            daum: function(done) {
+                async.forEach(Object.keys(daum), function (key, callback){
+                    let value = daum[key];
 
-                if (targets['daum'] == 1) {
+                    if (value == 1) {
 
-                    request('http://localhost:3000/search/daum?' + "&keyword=" + params['keyword'] + '&type=' + params['type'] + '&page=' + params['page'] + '&sort=' + params['sort'], (error, response, result) => {
+                        request('http://localhost:3000/search/daum?' + "&keyword=" + params['keyword'] + '&type=' + key + '&page=' + params['page'] + '&sort=' + params['sort'], (error, response, result) => {
 
-                        if (!error && response.statusCode == 200) {
+                            resultArray.push(JSON.parse(result));
+                            callback();
 
-                        }
-                        callback(null, JSON.parse(result));
-                    });
+                        });
 
-                } else {
-                    callback(null, 'fail');
-                }
+                    } else {
+                        callback(null, 'fail');
+                    }
+
+                }, function (err) {
+                    done();
+                });
             },
-            google: function (callback) {
+            google: function(done) {
+                async.forEach(Object.keys(google), function (key, callback){
+                    callback(null, 'fail');
 
-                if (targets['google'] == 1) {
+                }, function (err) {
 
-                }
-
-                callback();
+                    //resultArray.push(result);
+                    done();
+                });
             }
-        }, (err, datas) => {
+        }, (err) => {
             const output = [];
 
-            for (let p in datas) {
+            for (let i in resultArray) {
 
-                if (typeof(datas[p]) == 'object') {
-                    output.push.apply(output, datas[p]);
+                for (let p in resultArray[i]) {
+
+                    if (typeof(resultArray[i][p]) == 'object') {
+                        output.push(resultArray[i][p]);
+                    }
 
                 }
 
@@ -86,12 +106,11 @@ exports.index = (req, res) => {
 
         });
 
-    });
+    })
 
 }
 
 exports.getNaver = (req, res) => {
-    console.log('getNaver')
     let keyword = req.query.keyword;
     let group = req.query.type;
 
@@ -185,7 +204,6 @@ exports.insertNaver = (req, res) => {
 }
 
 exports.getDaum = (req, res) => {
-    console.log('getDaum')
     let keyword = req.query.keyword;
     let group = req.query.type;
 
