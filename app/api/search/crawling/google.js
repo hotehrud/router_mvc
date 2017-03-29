@@ -44,7 +44,7 @@ request({
 
     request({
         'User-Agent': 'Mozilla/5.0',
-        uri: "https://www.google.com/search?gws_rd=ssl&site=&source=hp&q=google&oq=google&tbm=nws",
+        uri: "https://www.google.com/search?gws_rd=ssl&site=&source=hp&q=google&oq=google",
         encoding: null
     }, (error, response, body) => {
         var data = iconv.convert(body).toString();
@@ -57,6 +57,7 @@ request({
 
             console.log(link.children('a').attr('href'))
             console.log(text + '\n');
+            console.log(link.next().find('.st').text());
         });
     });
 });

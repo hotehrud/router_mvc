@@ -5,9 +5,11 @@ const redis = require('../../redis')['db_2'];
 
 const request = require('request');
 const async = require('async');
+const _ = require('../../asset/js/extend').extends;
 
 const naver = require('./thirdparty/naver');
 const daum = require('./thirdparty/daum');
+const google = require('./thirdparty/google');
 
 exports.init = (req, res) => {
     // ...
@@ -299,10 +301,89 @@ exports.insertDaum = (req, res) => {
 }
 
 exports.getGoogle = (req, res) => {
+    let keyword = req.query.keyword;
+    let group = req.query.type;
+    const datas = {
+        search_keyword: keyword,
+        search_group: group,
+        search_provider: 'google'
+    }
 
+    if (typeof(group) == 'undefined') {
+        _.remove(datas, 'search_group');
+    }
+
+    Search.count({
+        where: datas
+    })
+        .then(cnt => {
+            console.log(cnt);
+            datas['page'] = req.query.page == 'undefined' ? 0 : req.query.page;
+            datas['sort'] = req.query.sort;
+
+            if (!cnt || datas['page'] * 10 >= cnt) {
+                datas['api_url'] = google.parse.params(datas)['url'];
+
+                // Insert search API, new contents about keyword
+                request({url:'http://localhost:3000/search/google', json: datas, method: 'POST'}, (error, response) => {
+
+                    if (!error && response.statusCode == 204) {
+                        return get(params, parse, res);
+                    }
+
+                });
+            } else {
+                return get(params, parse, res);
+            }
+        })
 }
 
 exports.insertGoogle = (req, res) => {
+
+    let api_url = encodeURI(req.body.api_url);
+    const datas = {};
+    _.copy(datas, req.body, ['api_url', 'page', 'sort', 'search_provider']);
+
+    console.log(datas);
+
+    //// Get - Request Open API
+    //request(api_url, (error, response, body) => {
+    //
+    //    if (!error && response.statusCode == 200) {
+    //
+    //        // property rename - Return Value in Open API
+    //        const items = daum.parse.custermizing(JSON.parse(body));
+    //
+    //        // Insert DB
+    //        async.forEach(items, (item, callback) => {
+    //
+    //            Search.upsert({
+    //                search_keyword: keyword,
+    //                search_group: group,
+    //                setProvider: 'google',
+    //                setProviderData: item
+    //            }).then( datas => {
+    //                callback();
+    //            }).catch( (err) => {
+    //                if (err) throw err;
+    //            })
+    //
+    //        }, (err) => {
+    //            if (err) throw err;
+    //
+    //            // keyword insert
+    //            request({url:'http://localhost:3000/keyword/create', json: {keyword: keyword, group: group, provider: 'google'}, method: 'POST'}, (error, response) => {
+    //                if (!error && response.statusCode == 204) {
+    //                    console.log('keyword insert suceess');
+    //                }
+    //            });
+    //
+    //            return res.status(204).end();
+    //        });
+    //
+    //    }
+    //
+    //});
 
 }
 
