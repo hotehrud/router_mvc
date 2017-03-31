@@ -303,6 +303,7 @@ exports.insertDaum = (req, res) => {
 exports.getGoogle = (req, res) => {
     let keyword = req.query.keyword;
     let group = req.query.type;
+
     const datas = {
         search_keyword: keyword,
         search_group: group,
@@ -322,7 +323,7 @@ exports.getGoogle = (req, res) => {
             datas['sort'] = req.query.sort;
 
             if (!cnt || datas['page'] * 10 >= cnt) {
-                datas['api_url'] = google.parse.params(datas)['url'];
+                datas['api_url'] = google.params(datas)['url'];
 
                 // Insert search API, new contents about keyword
                 request({url:'http://localhost:3000/search/google', json: datas, method: 'POST'}, (error, response) => {
@@ -342,48 +343,52 @@ exports.insertGoogle = (req, res) => {
 
     let api_url = encodeURI(req.body.api_url);
     const datas = {};
-    _.copy(datas, req.body, ['api_url', 'page', 'sort', 'search_provider']);
+
+    _.copy(datas, req.body, ['page', 'sort', 'search_provider']);
 
     console.log(datas);
 
-    //// Get - Request Open API
-    //request(api_url, (error, response, body) => {
-    //
-    //    if (!error && response.statusCode == 200) {
-    //
-    //        // property rename - Return Value in Open API
-    //        const items = daum.parse.custermizing(JSON.parse(body));
-    //
-    //        // Insert DB
-    //        async.forEach(items, (item, callback) => {
-    //
-    //            Search.upsert({
-    //                search_keyword: keyword,
-    //                search_group: group,
-    //                setProvider: 'google',
-    //                setProviderData: item
-    //            }).then( datas => {
-    //                callback();
-    //            }).catch( (err) => {
-    //                if (err) throw err;
-    //            })
-    //
-    //        }, (err) => {
-    //            if (err) throw err;
-    //
-    //            // keyword insert
-    //            request({url:'http://localhost:3000/keyword/create', json: {keyword: keyword, group: group, provider: 'google'}, method: 'POST'}, (error, response) => {
-    //                if (!error && response.statusCode == 204) {
-    //                    console.log('keyword insert suceess');
-    //                }
-    //            });
-    //
-    //            return res.status(204).end();
-    //        });
-    //
-    //    }
-    //
-    //});
+    // Get - Request Crawling datas
+    request({
+        url: api_url,
+        encoding: null
+    }, (error, response, body) => {
+
+        if (!error && response.statusCode == 200) {
+
+            // property rename && cheerio
+            const items = google.custermizing(body, datas);
+
+            //// Insert DB
+            //async.forEach(items, (item, callback) => {
+            //
+            //    Search.upsert({
+            //        search_keyword: keyword,
+            //        search_group: group,
+            //        setProvider: 'google',
+            //        setProviderData: item
+            //    }).then( datas => {
+            //        callback();
+            //    }).catch( (err) => {
+            //        if (err) throw err;
+            //    })
+            //
+            //}, (err) => {
+            //    if (err) throw err;
+            //
+            //    // keyword insert
+            //    request({url:'http://localhost:3000/keyword/create', json: {keyword: keyword, group: group, provider: 'google'}, method: 'POST'}, (error, response) => {
+            //        if (!error && response.statusCode == 204) {
+            //            console.log('keyword insert suceess');
+            //        }
+            //    });
+            //
+            //    return res.status(204).end();
+            //});
+
+        }
+
+    });
 
 }
 

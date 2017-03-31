@@ -40,7 +40,7 @@ request({
         'User-Agent': 'Mozilla/5.0',
         "Cookie": dataCookieToString(dataCookie)
     }
-}, function(error, response, body) {
+}, (error, response, body) => {
 
     request({
         'User-Agent': 'Mozilla/5.0',
