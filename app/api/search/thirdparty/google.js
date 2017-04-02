@@ -11,7 +11,7 @@ module.exports = (() => {
     parse.params = function (params) {
 
         let keyword = params['search_keyword'];
-        let type = params['search_group'] ? params['search_group'] : 'searchTotal';
+        let type = params['search_group'];
         let page = params['page'];
         let sort = params['sort'];
 
@@ -45,7 +45,6 @@ module.exports = (() => {
     }
 
     parse.crawling = function (body, params) {
-        const crawling = {};
 
         const $ = ( () => {
             let data = iconv.convert(body).toString();
@@ -58,24 +57,23 @@ module.exports = (() => {
             });
         })()
 
-        const init = ( () => {
-            let type = params['search_group'] ? params['search_group'] : 'searchTotal';
-            group()[type].call();
-        })()
-
         function group () {
             return {
                 searchTotal: function () {
-                    $("#center_col .g").each(function () {
+                    return $("#center_col .g").map(function () {
+                        const datas = {};
                         const that = $(this);
-                        console.log(that.html())
-                        console.log(that.find('h3[class="r"]').text());
-                        console.log(that.find('span[class="st"]').text());
-                        console.log(that.find('h3[class="r"]').children('a').attr('href'));
-                        console.log(that.find('img').attr('src'))
 
-                        console.log("@@")
-                    });
+                        datas['title'] = that.find('h3[class="r"]').text();
+                        datas['desc'] = that.find('span[class="st"]').text();
+                        datas['link'] = ( () => {
+                            let link = that.find('h3[class="r"]').children('a').attr('href');
+                            return link.substring(link.indexOf('q=') + 2);
+                        })()
+                        datas['image'] = that.find('img').attr('src');
+
+                        return datas;
+                    }).get();
                 },
                 image: function () {
 
@@ -88,7 +86,11 @@ module.exports = (() => {
                 }
             }
         }
-        return crawling;
+        return ( () => {
+            let type = params['search_group'];
+
+            return group()[type].call();
+        })()
     }
 
     parse.rename = function (obj) {

@@ -311,7 +311,7 @@ exports.getGoogle = (req, res) => {
     }
 
     if (typeof(group) == 'undefined') {
-        _.remove(datas, 'search_group');
+        return res.status(400).end('Invalid Argument');
     }
 
     Search.count({
@@ -329,12 +329,12 @@ exports.getGoogle = (req, res) => {
                 request({url:'http://localhost:3000/search/google', json: datas, method: 'POST'}, (error, response) => {
 
                     if (!error && response.statusCode == 204) {
-                        return get(params, parse, res);
+                        return get(datas, parse, res);
                     }
 
                 });
             } else {
-                return get(params, parse, res);
+                return get(datas, parse, res);
             }
         })
 }
@@ -344,7 +344,7 @@ exports.insertGoogle = (req, res) => {
     let api_url = encodeURI(req.body.api_url);
     const datas = {};
 
-    _.copy(datas, req.body, ['page', 'sort', 'search_provider']);
+    _.copy(datas, req.body, ['page', 'sort', 'search_provider', 'api_url']);
 
     console.log(datas);
 
@@ -359,32 +359,30 @@ exports.insertGoogle = (req, res) => {
             // property rename && cheerio
             const items = google.custermizing(body, datas);
 
-            //// Insert DB
-            //async.forEach(items, (item, callback) => {
-            //
-            //    Search.upsert({
-            //        search_keyword: keyword,
-            //        search_group: group,
-            //        setProvider: 'google',
-            //        setProviderData: item
-            //    }).then( datas => {
-            //        callback();
-            //    }).catch( (err) => {
-            //        if (err) throw err;
-            //    })
-            //
-            //}, (err) => {
-            //    if (err) throw err;
-            //
-            //    // keyword insert
-            //    request({url:'http://localhost:3000/keyword/create', json: {keyword: keyword, group: group, provider: 'google'}, method: 'POST'}, (error, response) => {
-            //        if (!error && response.statusCode == 204) {
-            //            console.log('keyword insert suceess');
-            //        }
-            //    });
-            //
-            //    return res.status(204).end();
-            //});
+            // Insert DB
+            datas['setProvider'] = 'google';
+            async.forEach(items, (item, callback) => {
+
+                datas['setProviderData'] = item;
+
+                Search.upsert(datas).then( replies => {
+                    callback();
+                }).catch( (err) => {
+                    if (err) throw err;
+                })
+
+            }, (err) => {
+                if (err) throw err;
+
+                //// keyword insert
+                //request({url:'http://localhost:3000/keyword/create', json: {keyword: keyword, group: group, provider: 'google'}, method: 'POST'}, (error, response) => {
+                //    if (!error && response.statusCode == 204) {
+                //        console.log('keyword insert suceess');
+                //    }
+                //});
+
+                return res.status(204).end();
+            });
 
         }
 
@@ -393,9 +391,9 @@ exports.insertGoogle = (req, res) => {
 }
 
 function get(datas, callback, res) {
-    let keyword = datas['keyword'];
-    let group = datas['type'];
-    let provider = datas['provider'];
+    let keyword = datas['search_keyword'];
+    let group = datas['search_group'];
+    let provider = datas['search_provider'];
     let pageno = (typeof(datas['page']) == 'undefined' || datas['page'] == 0 || datas['page'] == 1)
         ? 0
         : (datas['page'] - 1) * 10;
