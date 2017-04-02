@@ -2,88 +2,90 @@ const properties = require('../search.properties')['daum'];
 
 module.exports = (() => {
 
-    const mySearch = {};
+    const parse = {};
 
-    mySearch.parse = ( () => {
+    parse.params = function (params) {
 
-        const parse = {};
+        let keyword = params['search_keyword'];
+        let type = params['search_group'];
+        let page = params['page'];
+        let sort = params['sort'];
 
-        parse.params = function (params) {
-
-            let keyword = params['keyword'];
-            let type = params['type'];
-            let page = params['page'];
-            let sort = params['sort'];
-
-            const options = {
-                sub: {
-                    page: page,
-                    sort: sort
-                }
-            }
-
-            options['keyword'] = keyword;
-            options['type'] = type;
-            options['url'] = properties[type] + keyword;
-
-            // sub Options
-            if (page > 1) {
-                if (!next(page, options)) {
-                    return {
-                        url: 'invalid'
-                    };
-                }
-            }
-
-            if (sort == 'date') {
-                sortRequest(options);
-            }
-
+        if (typeof(properties[type]) == 'undefined') {
             return {
-                url: options['url']
+                url: {
+                    msg: 'invalid type of parameter'
+                }
+            };
+        }
+
+        const options = {
+            sub: {
+                page: page,
+                sort: sort
             }
         }
 
-        parse.rename = function (obj) {
-            const items = obj.channel['item'];
-            const property = properties['property'];
+        options['keyword'] = keyword;
+        options['type'] = type;
+        options['url'] = properties[type] + keyword;
 
-            return items.map( (item) => {
-                return (() => {
-                    const renewal = {};
-
-                    Object.keys(item).forEach( (key) => {
-
-                        property.hasOwnProperty(key)
-                            ? renewal[property[key]] = item[key]
-                            : renewal[key] = item[key]
-
-                    })
-
-                    return renewal;
-                })()
-            })
+        // sub Options
+        if (page > 1) {
+            if (!next(page, options)) {
+                return {
+                    url: {
+                        msg: 'invalid page of parameter'
+                    }
+                };
+            }
         }
 
-        function next (pageno, options) {
-            // 1 ~ 3
-
-            return pageno >= 4
-                ? false
-                : options['url'] += '&pageno=' + pageno;
-        }
-
-        function sortRequest (options) {
-            options['url'] += '&sort=date';
+        if (sort == 'date') {
+            sortRequest(options);
         }
 
         return {
-            params: parse.params,
-            custermizing: parse.rename
-        };
+            url: options['url']
+        }
+    }
 
-    })()
+    parse.rename = function (obj) {
+        const items = obj.channel['item'];
+        const property = properties['property'];
 
-    return mySearch;
+        return items.map( (item) => {
+            return (() => {
+                const renewal = {};
+
+                Object.keys(item).forEach( (key) => {
+
+                    property.hasOwnProperty(key)
+                        ? renewal[property[key]] = item[key]
+                        : renewal[key] = item[key]
+
+                })
+
+                return renewal;
+            })()
+        })
+    }
+
+    function next (pageno, options) {
+        // 1 ~ 3
+
+        return pageno >= 4
+            ? false
+            : options['url'] += '&pageno=' + pageno;
+    }
+
+    function sortRequest (options) {
+        options['url'] += '&sort=date';
+    }
+
+    return {
+        params: parse.params,
+        custermizing: parse.rename
+    };
 
 })()

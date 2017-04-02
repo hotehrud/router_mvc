@@ -116,39 +116,40 @@ exports.getNaver = (req, res) => {
     let keyword = req.query.keyword;
     let group = req.query.type;
 
+    const datas = {
+        search_keyword: keyword,
+        search_group: group,
+        search_provider: 'naver'
+    }
+
     // Update scheduled (use count)
     Search.count({
-        where: {
-            search_keyword: keyword,
-            search_group: group,
-            search_provider: 'naver'
-        }
+        where: datas
     })
         .then(cnt => {
-            const params = {
-                keyword: keyword,
-                type: group,
-                page: req.query.page == 'undefined' ? 0 : req.query.page,
-                sort: req.query.sort,
-                provider: 'naver'
-            }
 
-            if (!cnt || params['page'] * 10 >= cnt) {
-                const options = {};
+            datas['page'] = req.query.page == 'undefined' ? 0 : req.query.page;
+            datas['sort'] = req.query.sort;
 
-                options['url'] = 'http://localhost:3000/search/naver';
-                options['api_url'] = naver.parse.params(params)['url'];
+            if (!cnt || datas['page'] * 10 >= cnt) {
+
+                datas['api_url'] = naver.params(datas)['url'];
+
+                // 400 error
+                if (typeof(datas['api_url']) === 'object') {
+                    return res.status(400).end(datas['api_url']['msg']);
+                }
 
                 // Insert search API, new contents about keyword
-                request({url:options['url'], json: {api_url: options['api_url'],keyword: keyword, group: group}, method: 'POST'}, (error, response) => {
+                request({url:'http://localhost:3000/search/naver', json: datas, method: 'POST'}, (error, response) => {
 
                     if (!error && response.statusCode == 204) {
-                        return get(params, parse, res);
+                        return get(datas, parse, res);
                     }
 
                 });
             } else {
-                return get(params, parse, res);
+                return get(datas, parse, res);
             }
         })
 
@@ -156,11 +157,11 @@ exports.getNaver = (req, res) => {
 
 exports.insertNaver = (req, res) => {
     let api_url = encodeURI(req.body.api_url);
-    let keyword = req.body.keyword;
-    let group = req.body.group;
+    const datas = {};
+
+    _.copy(datas, req.body, ['page', 'sort', 'search_provider', 'api_url']);
 
     const options = {};
-
     options['url'] = api_url;
     options['headers'] = naver.getHeader();
 
@@ -170,17 +171,13 @@ exports.insertNaver = (req, res) => {
         if (!error && response.statusCode == 200) {
 
             // property rename - Return Value in Open API
-            const items = naver.parse.custermizing(JSON.parse(body));
+            const items = naver.custermizing(JSON.parse(body));
 
-            // Insert DB
+            datas['setProvider'] = 'naver';
             async.forEach(items, (item, callback) => {
 
-                Search.upsert({
-                    search_keyword: keyword,
-                    search_group: group,
-                    setProvider: 'naver',
-                    setProviderData: item
-                }).then( result => {
+                datas['setProviderData'] = item;
+                Search.upsert(datas).then( replies => {
                     callback();
                 }).catch( (err) => {
                     if (err) throw err;
@@ -190,9 +187,8 @@ exports.insertNaver = (req, res) => {
                 if (err) throw err;
 
                 // keyword insert
-                request({url:'http://localhost:3000/keyword/create', json: {keyword: keyword, group: group, provider: 'naver'}, method: 'POST'}, (error, response) => {
+                request({url:'http://localhost:3000/keyword/create', json: {datas}, method: 'POST'}, (error, response) => {
                     if (!error && response.statusCode == 204) {
-                        // .....
                         console.log('keyword insert suceess');
                     }
                 });
@@ -209,74 +205,65 @@ exports.getDaum = (req, res) => {
     let keyword = req.query.keyword;
     let group = req.query.type;
 
+    const datas = {
+        search_keyword: keyword,
+        search_group: group,
+        search_provider: 'daum'
+    }
+
     Search.count({
-        where: {
-            search_keyword: keyword,
-            search_group: group,
-            search_provider: 'daum'
-        }
+        where: datas
     })
         .then(cnt => {
-            const params = {
-                keyword: keyword,
-                type: group,
-                page: req.query.page == 'undefined' ? 0 : req.query.page,
-                sort: req.query.sort,
-                provider: 'daum'
-            }
 
-            if (!cnt || params['page'] * 10 >= cnt) {
-                const options = {};
+            datas['page'] = req.query.page == 'undefined' ? 0 : req.query.page;
+            datas['sort'] = req.query.sort;
 
-                options['url'] = 'http://localhost:3000/search/daum';
-                options['api_url'] = daum.parse.params(params)['url'];
+            if (!cnt || datas['page'] * 10 >= cnt) {
+                datas['api_url'] = daum.params(datas)['url'];
 
-                // Daum API pageno excess
-                if (options['api_url'] == 'invalid') {
-                    return res.status(400).end('Invalid Argument');
+                // 400 error
+                if (typeof(datas['api_url']) === 'object') {
+                    return res.status(400).end(datas['api_url']['msg']);
                 }
 
                 // Insert search API, new contents about keyword
-                request({url:options['url'], json: {api_url: options['api_url'],keyword: keyword, group: group}, method: 'POST'}, (error, response) => {
+                request({url:'http://localhost:3000/search/daum', json: datas, method: 'POST'}, (error, response) => {
 
                     if (!error && response.statusCode == 204) {
-                        return get(params, parse, res);
+                        return get(datas, parse, res);
                     }
 
                 });
             } else {
-                return get(params, parse, res);
+                return get(datas, parse, res);
             }
         })
 
 }
 
 exports.insertDaum = (req, res) => {
+
     let api_url = encodeURI(req.body.api_url);
-    let keyword = req.body.keyword;
-    let group = req.body.group;
+    const datas = {};
 
-    const options = {};
-
-    options['url'] = api_url;
+    _.copy(datas, req.body, ['page', 'sort', 'search_provider', 'api_url']);
 
     // Get - Request Open API
-    request(options, (error, response, body) => {
+    request({url: api_url}, (error, response, body) => {
 
         if (!error && response.statusCode == 200) {
 
             // property rename - Return Value in Open API
-            const items = daum.parse.custermizing(JSON.parse(body));
+            const items = daum.custermizing(JSON.parse(body));
 
             // Insert DB
+            datas['setProvider'] = 'daum';
             async.forEach(items, (item, callback) => {
 
-                Search.upsert({
-                    search_keyword: keyword,
-                    search_group: group,
-                    setProvider: 'daum',
-                    setProviderData: item
-                }).then( datas => {
+                datas['setProviderData'] = item;
+
+                Search.upsert(datas).then( replies => {
                     callback();
                 }).catch( (err) => {
                     if (err) throw err;
@@ -286,7 +273,7 @@ exports.insertDaum = (req, res) => {
                 if (err) throw err;
 
                 // keyword insert
-                request({url:'http://localhost:3000/keyword/create', json: {keyword: keyword, group: group, provider: 'daum'}, method: 'POST'}, (error, response) => {
+                request({url:'http://localhost:3000/keyword/create', json: datas, method: 'POST'}, (error, response) => {
                     if (!error && response.statusCode == 204) {
                         console.log('keyword insert suceess');
                     }
@@ -318,12 +305,17 @@ exports.getGoogle = (req, res) => {
         where: datas
     })
         .then(cnt => {
-            console.log(cnt);
+
             datas['page'] = req.query.page == 'undefined' ? 0 : req.query.page;
             datas['sort'] = req.query.sort;
 
             if (!cnt || datas['page'] * 10 >= cnt) {
                 datas['api_url'] = google.params(datas)['url'];
+
+                // 400 error
+                if (typeof(datas['api_url']) === 'object') {
+                    return res.status(400).end(datas['api_url']['msg']);
+                }
 
                 // Insert search API, new contents about keyword
                 request({url:'http://localhost:3000/search/google', json: datas, method: 'POST'}, (error, response) => {
@@ -374,12 +366,12 @@ exports.insertGoogle = (req, res) => {
             }, (err) => {
                 if (err) throw err;
 
-                //// keyword insert
-                //request({url:'http://localhost:3000/keyword/create', json: {keyword: keyword, group: group, provider: 'google'}, method: 'POST'}, (error, response) => {
-                //    if (!error && response.statusCode == 204) {
-                //        console.log('keyword insert suceess');
-                //    }
-                //});
+                // keyword insert
+                request({url:'http://localhost:3000/keyword/create', json: {datas}, method: 'POST'}, (error, response) => {
+                    if (!error && response.statusCode == 204) {
+                        console.log('keyword insert suceess');
+                    }
+                });
 
                 return res.status(204).end();
             });

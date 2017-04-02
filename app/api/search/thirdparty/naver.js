@@ -2,18 +2,22 @@ const properties = require('../search.properties')['naver'];
 
 module.exports = (() => {
 
-    const mySearch = {};
-
-    mySearch.parse = ( () => {
-
         const parse = {};
 
         parse.params = function (params) {
 
-            let keyword = params['keyword'];
-            let type = params['type'];
+            let keyword = params['search_keyword'];
+            let type = params['search_group'];
             let page = params['page'];
             let sort = params['sort'];
+
+            if (typeof(properties[type]) == 'undefined') {
+                return {
+                    url: {
+                        msg: 'invalid type of parameter'
+                    }
+                };
+            }
 
             const options = {
                 sub: {
@@ -72,15 +76,8 @@ module.exports = (() => {
 
         return {
             params: parse.params,
-            custermizing: parse.rename
+            custermizing: parse.rename,
+            getHeader: () => properties['headers']
         };
-
-    })()
-
-    mySearch.getHeader = () => {
-        return properties['headers'];
-    }
-
-    return mySearch;
 
 })()

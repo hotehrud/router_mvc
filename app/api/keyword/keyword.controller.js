@@ -52,9 +52,9 @@ exports.rank = (req, res) => {
 }
 
 exports.createOrIncrease = (req, res) => {
-    let keyword = req.body.keyword;
-    let group = req.body.group;
-    let provider = req.body.provider;
+    let keyword = req.body.search_keyword;
+    let group = req.body.search_group;
+    let provider = req.body.setProvider;
 
     // redis key => keyword + group + provider
     let key = keyword + '&' + group + '&' + provider;

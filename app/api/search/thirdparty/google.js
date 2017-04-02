@@ -15,6 +15,14 @@ module.exports = (() => {
         let page = params['page'];
         let sort = params['sort'];
 
+        if (typeof(properties[type]) == 'undefined') {
+            return {
+                url: {
+                    msg: 'invalid type of parameter'
+                }
+            };
+        }
+
         const options = {
             sub: {
                 page: page,
@@ -126,6 +134,5 @@ module.exports = (() => {
         params: parse.params,
         custermizing: parse.crawling
     };
-
 
 })()
