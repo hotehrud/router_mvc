@@ -83,14 +83,55 @@ module.exports = (() => {
                         return datas;
                     }).get();
                 },
-                image: function () {
+                searchImage: function () {
 
                 },
-                news: function () {
+                searchNews: function () {
+                    return $("#center_col .g").map(function () {
+                        const datas = {};
+                        const that = $(this);
 
+                        datas['title'] = that.find('h3[class="r"]').text();
+                        datas['desc'] = that.find('span[class="st"]').text();
+                        datas['link'] = ( () => {
+                            let link = that.find('h3[class="r"]').children('a').attr('href');
+                            return link.substring(link.indexOf('q=') + 2);
+                        })()
+                        datas['image'] = that.find('img').attr('src');
+
+                        return datas;
+                    }).get();
                 },
-                video: function () {
+                searchVclip: function () {
+                    return $("#center_col .g").map(function () {
+                        const datas = {};
+                        const that = $(this);
 
+                        datas['title'] = that.find('h3[class="r"]').text();
+                        datas['desc'] = that.find('span[class="st"]').text();
+                        datas['link'] = ( () => {
+                            let link = that.find('h3[class="r"]').children('a').attr('href');
+                            return link.substring(link.indexOf('q=') + 2);
+                        })()
+                        datas['image'] = that.find('img').attr('src');
+
+                        return datas;
+                    }).get();
+                },
+                searchBook: function () {
+                    return $("#center_col .g").map(function () {
+                        const datas = {};
+                        const that = $(this);
+
+                        datas['title'] = that.find('h3[class="r"]').text();
+                        datas['desc'] = that.find('span[class="st"]').text();
+                        datas['link'] = ( () => {
+                            return that.find('h3[class="r"]').children('a').attr('href');
+                        })()
+                        datas['image'] = that.find('img').attr('src');
+
+                        return datas;
+                    }).get();
                 }
             }
         }

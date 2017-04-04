@@ -33,7 +33,7 @@ const apiProperties = {
     google: {
         searchTotal: 'https://www.google.com/search?gws_rd=ssl&site=&source=hp&q=',
         searchNews: 'https://www.google.com/search?gws_rd=ssl&site=&source=hp&tbm=nws&q=',
-        searchVclip: 'https://www.google.com/search?gws_rd=ssl&site=&source=hp&tbm=nws&q=',
+        searchVclip: 'https://www.google.com/search?gws_rd=ssl&site=&source=hp&tbm=vid&q=',
         searchImage: 'https://www.google.com/search?gws_rd=ssl&site=&source=hp&tbm=isch&q=',
         searchBook: 'https://www.google.com/search?gws_rd=ssl&site=&source=hp&tbm=bks&q='
     }

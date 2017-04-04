@@ -58,7 +58,7 @@ exports.createOrIncrease = (req, res) => {
 
     // redis key => keyword + group + provider
     let key = keyword + '&' + group + '&' + provider;
-
+    
     redis.hgetall(key, (err, reply) => {
         if (err) throw err;
 

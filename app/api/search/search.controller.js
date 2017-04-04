@@ -187,7 +187,7 @@ exports.insertNaver = (req, res) => {
                 if (err) throw err;
 
                 // keyword insert
-                request({url:'http://localhost:3000/keyword/create', json: {datas}, method: 'POST'}, (error, response) => {
+                request({url:'http://localhost:3000/keyword/create', json: datas, method: 'POST'}, (error, response) => {
                     if (!error && response.statusCode == 204) {
                         console.log('keyword insert suceess');
                     }
@@ -367,7 +367,7 @@ exports.insertGoogle = (req, res) => {
                 if (err) throw err;
 
                 // keyword insert
-                request({url:'http://localhost:3000/keyword/create', json: {datas}, method: 'POST'}, (error, response) => {
+                request({url:'http://localhost:3000/keyword/create', json: datas, method: 'POST'}, (error, response) => {
                     if (!error && response.statusCode == 204) {
                         console.log('keyword insert suceess');
                     }

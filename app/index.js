@@ -16,7 +16,8 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 
 // Set content type GLOBALLY for any response.
 app.use(function (req, res, next) {
-    res.contentType('application/vnd.api+json');
+    //res.contentType('application/vnd.api+json');
+    res.set({ 'content-type': 'application/json; charset=utf-8' })
     next();
 });
 
