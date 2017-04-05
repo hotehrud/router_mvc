@@ -1,8 +1,10 @@
 const properties = require('../search.properties')['google'];
 
 const cheerio = require("cheerio");
-var Iconv  = require('iconv').Iconv;
-var iconv = new Iconv('euc-kr', 'utf-8//translit//ignore');
+const Iconv  = require('iconv').Iconv;
+const iconv = new Iconv('euc-kr', 'utf-8//translit//ignore');
+
+const _ = require('../../../asset/js/extend').extends;
 
 module.exports = (() => {
 
@@ -126,7 +128,7 @@ module.exports = (() => {
                         datas['title'] = that.find('h3[class="r"]').text();
                         datas['desc'] = that.find('span[class="st"]').text();
                         datas['link'] = ( () => {
-                            return that.find('h3[class="r"]').children('a').attr('href');
+                            return _.slice(that.find('h3[class="r"]').children('a').attr('href'), '&', 0);
                         })()
                         datas['image'] = that.find('img').attr('src');
 
@@ -164,7 +166,9 @@ module.exports = (() => {
     }
 
     function next (pageno, options) {
-        return options['url'] += '&pageno=' + pageno;
+        return pageno >= 10
+            ? false
+            : options['url'] += '&start=' + ((pageno - 1) * 10);
     }
 
     function sortRequest (options) {

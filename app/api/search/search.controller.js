@@ -38,11 +38,10 @@ exports.init = (req, res) => {
         async.parallel({
             naver: function (done) {
                 async.forEach(Object.keys(naver), function (key, callback){
-                    console.log(key)
                     let value = naver[key];
 
                     if (value == 1) {
-                        console.log('naver ' + key + ' ' + value)
+
                         request('http://localhost:3000/search/naver?' + "&keyword=" + params['keyword'] + '&type=' + key + '&page=' + params['page'] + '&sort=' + params['sort'], (error, response, result) => {
 
                             resultArray.push(JSON.parse(result));
@@ -307,9 +306,8 @@ exports.getGoogle = (req, res) => {
         .then(cnt => {
 
             datas['page'] = req.query.page == 'undefined' ? 0 : req.query.page;
-            datas['sort'] = req.query.sort;
 
-            if (!cnt || datas['page'] * 10 >= cnt) {
+            if (!cnt || datas['page'] * 10 > cnt) {
                 datas['api_url'] = google.params(datas)['url'];
 
                 // 400 error
@@ -337,8 +335,6 @@ exports.insertGoogle = (req, res) => {
     const datas = {};
 
     _.copy(datas, req.body, ['page', 'sort', 'search_provider', 'api_url']);
-
-    console.log(datas);
 
     // Get - Request Crawling datas
     request({
