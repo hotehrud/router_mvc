@@ -22,6 +22,11 @@ exports.init = (req, res) => {
         sort: req.query.sort
     }
 
+    const options = {
+        url: '',
+        method: 'GET'
+    };
+
     if (!user) {
         return res.status(401).json({msg: 'You need login'});
     }
@@ -41,8 +46,10 @@ exports.init = (req, res) => {
                     let value = naver[key];
 
                     if (value == 1) {
+                        options['url'] = 'http://localhost:' + req.headers.host.split(':')[1];
+                        options['url'] += '/search/naver?' + "&keyword=" + params['keyword'] + '&type=' + key + '&page=' + params['page'] + '&sort=' + params['sort'];
 
-                        request('http://localhost:3000/search/naver?' + "&keyword=" + params['keyword'] + '&type=' + key + '&page=' + params['page'] + '&sort=' + params['sort'], (error, response, result) => {
+                        request(options, (error, response, result) => {
 
                             resultArray.push(JSON.parse(result));
                             callback();
@@ -62,8 +69,10 @@ exports.init = (req, res) => {
                     let value = daum[key];
 
                     if (value == 1) {
+                        options['url'] = 'http://localhost:' + req.headers.host.split(':')[1];
+                        options['url'] += '/search/daum?' + "&keyword=" + params['keyword'] + '&type=' + key + '&page=' + params['page'] + '&sort=' + params['sort'];
 
-                        request('http://localhost:3000/search/daum?' + "&keyword=" + params['keyword'] + '&type=' + key + '&page=' + params['page'] + '&sort=' + params['sort'], (error, response, result) => {
+                        request(options, (error, response, result) => {
 
                             resultArray.push(JSON.parse(result));
                             callback();
@@ -140,7 +149,14 @@ exports.getNaver = (req, res) => {
                 }
 
                 // Insert search API, new contents about keyword
-                request({url:'http://localhost:3000/search/naver', json: datas, method: 'POST'}, (error, response) => {
+                const options = {
+                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/search/naver',
+                    method: 'POST',
+                    json: datas
+                };
+
+                request(options, (error, response) => {
+                    console.log(JSON.stringify(response.headers));
 
                     if (!error && response.statusCode == 204) {
                         return get(datas, parse, res);
@@ -168,8 +184,9 @@ exports.insertNaver = (req, res) => {
     request(options, (error, response, body) => {
 
         if (!error && response.statusCode == 200) {
-
-            // property rename - Return Value in Open API
+            //res.setHeader("Cache-Control", "public, max-age=2592000");
+            //res.setHeader("Expires", new Date(Date.now() + 2592000000).toGMTString());
+            //property rename - Return Value in Open API
             const items = naver.custermizing(JSON.parse(body));
 
             datas['setProvider'] = 'naver';
@@ -186,7 +203,13 @@ exports.insertNaver = (req, res) => {
                 if (err) throw err;
 
                 // keyword insert
-                request({url:'http://localhost:3000/keyword/create', json: datas, method: 'POST'}, (error, response) => {
+                const options = {
+                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/keyword/create',
+                    method: 'POST',
+                    json: datas
+                };
+
+                request(options, (error, response) => {
                     if (!error && response.statusCode == 204) {
                         console.log('keyword insert suceess');
                     }
@@ -227,7 +250,13 @@ exports.getDaum = (req, res) => {
                 }
 
                 // Insert search API, new contents about keyword
-                request({url:'http://localhost:3000/search/daum', json: datas, method: 'POST'}, (error, response) => {
+                const options = {
+                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/search/daum',
+                    method: 'POST',
+                    json: datas
+                };
+
+                request(options, (error, response) => {
 
                     if (!error && response.statusCode == 204) {
                         return get(datas, parse, res);
@@ -272,7 +301,13 @@ exports.insertDaum = (req, res) => {
                 if (err) throw err;
 
                 // keyword insert
-                request({url:'http://localhost:3000/keyword/create', json: datas, method: 'POST'}, (error, response) => {
+                const options = {
+                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/keyword/create',
+                    method: 'POST',
+                    json: datas
+                };
+
+                request(options, (error, response) => {
                     if (!error && response.statusCode == 204) {
                         console.log('keyword insert suceess');
                     }
@@ -316,7 +351,13 @@ exports.getGoogle = (req, res) => {
                 }
 
                 // Insert search API, new contents about keyword
-                request({url:'http://localhost:3000/search/google', json: datas, method: 'POST'}, (error, response) => {
+                const options = {
+                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/search/google',
+                    method: 'POST',
+                    json: datas
+                };
+
+                request(options, (error, response) => {
 
                     if (!error && response.statusCode == 204) {
                         return get(datas, parse, res);
@@ -363,7 +404,13 @@ exports.insertGoogle = (req, res) => {
                 if (err) throw err;
 
                 // keyword insert
-                request({url:'http://localhost:3000/keyword/create', json: datas, method: 'POST'}, (error, response) => {
+                const options = {
+                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/keyword/create',
+                    method: 'POST',
+                    json: datas
+                };
+
+                request(options, (error, response) => {
                     if (!error && response.statusCode == 204) {
                         console.log('keyword insert suceess');
                     }
