@@ -11,6 +11,8 @@ const naver = require('./thirdparty/naver');
 const daum = require('./thirdparty/daum');
 const google = require('./thirdparty/google');
 
+const port = require('../../config/environments').port;
+
 exports.init = (req, res) => {
     // ...
     let user = req.user;
@@ -46,7 +48,7 @@ exports.init = (req, res) => {
                     let value = naver[key];
 
                     if (value == 1) {
-                        options['url'] = 'http://localhost:' + req.headers.host.split(':')[1];
+                        options['url'] = 'http://localhost:' + port;
                         options['url'] += '/search/naver?' + "&keyword=" + params['keyword'] + '&type=' + key + '&page=' + params['page'] + '&sort=' + params['sort'];
 
                         request(options, (error, response, result) => {
@@ -69,7 +71,7 @@ exports.init = (req, res) => {
                     let value = daum[key];
 
                     if (value == 1) {
-                        options['url'] = 'http://localhost:' + req.headers.host.split(':')[1];
+                        options['url'] = 'http://localhost:' + port;
                         options['url'] += '/search/daum?' + "&keyword=" + params['keyword'] + '&type=' + key + '&page=' + params['page'] + '&sort=' + params['sort'];
 
                         request(options, (error, response, result) => {
@@ -150,7 +152,7 @@ exports.getNaver = (req, res) => {
 
                 // Insert search API, new contents about keyword
                 const options = {
-                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/search/naver',
+                    url: 'http://localhost:' + port + '/search/naver',
                     method: 'POST',
                     json: datas
                 };
@@ -160,7 +162,11 @@ exports.getNaver = (req, res) => {
 
                     if (!error && response.statusCode == 204) {
                         return get(datas, parse, res);
+                    } else {
+                        console.log(response)
+                        if (error) throw error;
                     }
+
 
                 });
             } else {
@@ -204,7 +210,7 @@ exports.insertNaver = (req, res) => {
 
                 // keyword insert
                 const options = {
-                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/keyword/create',
+                    url: 'http://localhost:' + port + '/keyword/create',
                     method: 'POST',
                     json: datas
                 };
@@ -251,7 +257,7 @@ exports.getDaum = (req, res) => {
 
                 // Insert search API, new contents about keyword
                 const options = {
-                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/search/daum',
+                    url: 'http://localhost:' + port + '/search/daum',
                     method: 'POST',
                     json: datas
                 };
@@ -302,7 +308,7 @@ exports.insertDaum = (req, res) => {
 
                 // keyword insert
                 const options = {
-                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/keyword/create',
+                    url: 'http://localhost:' + port + '/keyword/create',
                     method: 'POST',
                     json: datas
                 };
@@ -352,7 +358,7 @@ exports.getGoogle = (req, res) => {
 
                 // Insert search API, new contents about keyword
                 const options = {
-                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/search/google',
+                    url: 'http://localhost:' + port + '/search/google',
                     method: 'POST',
                     json: datas
                 };
@@ -405,7 +411,7 @@ exports.insertGoogle = (req, res) => {
 
                 // keyword insert
                 const options = {
-                    url: 'http://localhost:' + req.headers.host.split(':')[1] + '/keyword/create',
+                    url: 'http://localhost:' + port + '/keyword/create',
                     method: 'POST',
                     json: datas
                 };

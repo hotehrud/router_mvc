@@ -1,7 +1,7 @@
 const environments = {
     development: {
         host: "localhost",
-        port: "3000",
+        port: "8000",
         mysql: {
             username: 'mygumi',
             password: 'mygumi*0707~!',
